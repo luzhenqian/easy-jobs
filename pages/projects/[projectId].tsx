@@ -1,20 +1,20 @@
-import { Suspense } from "react";
-import { Routes } from "@blitzjs/next";
-import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useQuery, useMutation } from "@blitzjs/rpc";
-import { useParam } from "@blitzjs/next";
+import { Suspense } from "react"
+import { Routes } from "@blitzjs/next"
+import Head from "next/head"
+import Link from "next/link"
+import { useRouter } from "next/router"
+import { useQuery, useMutation } from "@blitzjs/rpc"
+import { useParam } from "@blitzjs/next"
 
-import Layout from "app/core/layouts/Layout";
-import getProject from "app/projects/queries/getProject";
-import deleteProject from "app/projects/mutations/deleteProject";
+import Layout from "app/core/layouts/Layout"
+import getProject from "app/projects/queries/getProject"
+import deleteProject from "app/projects/mutations/deleteProject"
 
 export const Project = () => {
-  const router = useRouter();
-  const projectId = useParam("projectId", "number");
-  const [deleteProjectMutation] = useMutation(deleteProject);
-  const [project] = useQuery(getProject, { id: projectId });
+  const router = useRouter()
+  const projectId = useParam("projectId", "number")
+  const [deleteProjectMutation] = useMutation(deleteProject)
+  const [project] = useQuery(getProject, { id: projectId })
 
   return (
     <>
@@ -34,8 +34,8 @@ export const Project = () => {
           type="button"
           onClick={async () => {
             if (window.confirm("This will be deleted")) {
-              await deleteProjectMutation({ id: project.id });
-              router.push(Routes.ProjectsPage());
+              await deleteProjectMutation({ id: project.id })
+              void router.push(Routes.ProjectsPage())
             }
           }}
           style={{ marginLeft: "0.5rem" }}
@@ -44,8 +44,8 @@ export const Project = () => {
         </button>
       </div>
     </>
-  );
-};
+  )
+}
 
 const ShowProjectPage = () => {
   return (
@@ -60,10 +60,10 @@ const ShowProjectPage = () => {
         <Project />
       </Suspense>
     </div>
-  );
-};
+  )
+}
 
-ShowProjectPage.authenticate = true;
-ShowProjectPage.getLayout = (page) => <Layout>{page}</Layout>;
+ShowProjectPage.authenticate = true
+ShowProjectPage.getLayout = (page) => <Layout>{page}</Layout>
 
-export default ShowProjectPage;
+export default ShowProjectPage
