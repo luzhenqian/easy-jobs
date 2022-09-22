@@ -3,6 +3,8 @@ import { Form, FORM_ERROR } from "app/core/components/Form"
 import signup from "app/auth/mutations/signup"
 import { Signup } from "app/auth/validations"
 import { useMutation } from "@blitzjs/rpc"
+import Link from "next/link"
+import { Routes } from "@blitzjs/next"
 
 type SignupFormProps = {
   onSuccess?: () => void
@@ -11,7 +13,7 @@ type SignupFormProps = {
 export const SignupForm = (props: SignupFormProps) => {
   const [signupMutation] = useMutation(signup)
   return (
-    <div className="w-[400px]">
+    <div className="w-[400px] relative">
       <h1 className="text-2xl">注册</h1>
 
       <Form
@@ -35,6 +37,13 @@ export const SignupForm = (props: SignupFormProps) => {
         <LabeledTextField name="email" label="邮箱" placeholder="输入电子邮箱" />
         <LabeledTextField name="password" label="密码" placeholder="输入密码" type="password" />
       </Form>
+
+      <div className="absolute right-0 bottom-2">
+        已有账号？{" "}
+        <Link href={Routes.LoginPage()}>
+          <a>去登录</a>
+        </Link>
+      </div>
     </div>
   )
 }

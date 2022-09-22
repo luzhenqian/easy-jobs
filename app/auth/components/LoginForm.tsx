@@ -14,11 +14,11 @@ type LoginFormProps = {
 export const LoginForm = (props: LoginFormProps) => {
   const [loginMutation] = useMutation(login)
   return (
-    <div>
-      <h1>Login</h1>
+    <div className="w-[400px] relative">
+      <h1 className="text-2xl">登录</h1>
 
       <Form
-        submitText="Login"
+        submitText="登录"
         schema={Login}
         initialValues={{ email: "", password: "" }}
         onSubmit={async (values) => {
@@ -37,19 +37,19 @@ export const LoginForm = (props: LoginFormProps) => {
           }
         }}
       >
-        <LabeledTextField name="email" label="Email" placeholder="Email" />
-        <LabeledTextField name="password" label="Password" placeholder="Password" type="password" />
+        <LabeledTextField name="email" label="邮箱" placeholder="输入电子邮箱" />
+        <LabeledTextField name="password" label="密码" placeholder="输入密码" type="password" />
         <div>
           <Link href={Routes.ForgotPasswordPage()}>
-            <a>Forgot your password?</a>
+            <a>忘记密码?</a>
           </Link>
         </div>
       </Form>
 
-      <div style={{ marginTop: "1rem" }}>
-        Or{" "}
+      <div className="absolute right-0 bottom-2">
+        没有账号？{" "}
         <Link href={Routes.SignupPage()}>
-          <a>Sign Up</a>
+          <a>去注册</a>
         </Link>
       </div>
     </div>

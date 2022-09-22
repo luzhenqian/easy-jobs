@@ -8,12 +8,10 @@ const SignupPage: BlitzPage = () => {
   const router = useRouter()
 
   return (
-    <Layout title="Sign Up">
-      <div className="flex justify-center items-center">
-        <Card>
-          <SignupForm onSuccess={() => router.push(Routes.Home())} />
-        </Card>
-      </div>
+    <Layout title="注册">
+      <Card>
+        <SignupForm onSuccess={() => router.push(Routes.Home())} />
+      </Card>
     </Layout>
   )
 }
