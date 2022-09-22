@@ -1,0 +1,41 @@
+import { Form, FormProps } from "app/core/components/Form"
+import { LabeledTextField, LabeledCodeField } from "app/core/components/LabeledTextField"
+import { forwardRef, useImperativeHandle, useRef } from "react"
+import { z } from "zod"
+export { FORM_ERROR } from "app/core/components/Form"
+
+export const TrainingForm = forwardRef(_TrainingForm)
+
+function _TrainingForm<S extends z.ZodType<any, any>>(props: FormProps<S> | any, ref) {
+  const htmlEditorRef = useRef(null)
+  const cssEditorRef = useRef(null)
+  useImperativeHandle(ref, () => ({
+    get html() {
+      return (htmlEditorRef?.current as any)?.getValue()
+    },
+    get css() {
+      return (cssEditorRef?.current as any)?.getValue()
+    },
+  }))
+  return (
+    <Form<S> {...props}>
+      <LabeledTextField name="name" label="题目" placeholder="输入题目名称" />
+      <LabeledCodeField
+        ref={htmlEditorRef}
+        name="htmlCode"
+        label="html 代码"
+        language="html"
+        width={800}
+        height={100}
+      />
+      <LabeledCodeField
+        ref={cssEditorRef}
+        name="cssCode"
+        label="css 代码"
+        language="css"
+        width={800}
+        height={100}
+      />
+    </Form>
+  )
+}

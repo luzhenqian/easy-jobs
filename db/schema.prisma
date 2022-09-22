@@ -70,3 +70,15 @@ model Project {
   updatedAt DateTime @updatedAt
   name      String
 }
+
+model Training {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  recordId     String   @default(uuid())
+  type         String
+  jsFramework  Json
+  cssFramework Json
+  code         Json
+  name         String
+}
