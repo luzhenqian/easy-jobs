@@ -88,6 +88,7 @@ export const LabeledCodeField = forwardRef<HTMLInputElement, LabeledCodeFieldPro
     }
 
     const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
+    console.log("props:", props)
 
     return (
       <div>

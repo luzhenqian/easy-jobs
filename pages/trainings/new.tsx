@@ -31,7 +31,7 @@ const NewTrainingPage = () => {
   }
   return (
     <Layout
-      title={"Create New Training"}
+      title={"创建练习题"}
       // bodyStyle={{ justifyContent: "flex-start", alignItems: "flex-start" }}
     >
       <div className="flex flex-col">

@@ -24,6 +24,7 @@ function _TrainingForm<S extends z.ZodType<any, any>>(props: FormProps<S> | any,
         ref={htmlEditorRef}
         name="htmlCode"
         label="html 代码"
+        defaultValue={props.initialValues?.code.html}
         language="html"
         width={800}
         height={100}
@@ -32,6 +33,7 @@ function _TrainingForm<S extends z.ZodType<any, any>>(props: FormProps<S> | any,
         ref={cssEditorRef}
         name="cssCode"
         label="css 代码"
+        defaultValue={props.initialValues?.code.css}
         language="css"
         width={800}
         height={100}
