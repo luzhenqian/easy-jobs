@@ -34,16 +34,16 @@ export default resolver.pipe(
       console.log(data.code.css, "css")
 
       await originPage.setContent(`${data.code.html}<style>${data.code.css}</style>`)
-      const originImageBinary = await originPage.screenshot({
+      const originImageBinary: Buffer = (await originPage.screenshot({
         encoding: "binary",
-      })
+      })) as Buffer
       const targetPage = await browser.newPage()
       await targetPage.setContent(
         `${(training?.code as any).html}<style>${(training?.code as any).css}</style>`
       )
-      const targetImageBinary = await targetPage.screenshot({
+      const targetImageBinary: Buffer = (await targetPage.screenshot({
         encoding: "binary",
-      })
+      })) as Buffer
       let pass = false
       console.log(originImageBinary, targetImageBinary)
 
