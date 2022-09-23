@@ -19,7 +19,7 @@ function _TrainingForm<S extends z.ZodType<any, any>>(props: FormProps<S> | any,
   }))
   return (
     <Form<S> {...props}>
-      <LabeledTextField name="name" label="题目" placeholder="输入题目名称" />
+      <LabeledTextField name="name" label="题目" placeholder="输入题目名称" required />
       <LabeledCodeField
         ref={htmlEditorRef}
         name="htmlCode"

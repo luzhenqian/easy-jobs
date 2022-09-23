@@ -47,10 +47,11 @@ const UserInfo = () => {
   }
 }
 
-const Layout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
-  title,
-  children,
-}) => {
+const Layout: BlitzLayout<{
+  bodyStyle?: Partial<CSSStyleDeclaration>
+  title?: string
+  children?: React.ReactNode
+}> = ({ bodyStyle, title, children }) => {
   return (
     <>
       <Head>
@@ -58,7 +59,7 @@ const Layout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header className="flex items-center justify-between h-[80px] px-16 font-medium text-2xl">
+      <header className={"flex items-center justify-between h-[80px] px-16 font-medium text-2xl"}>
         <Link href="/">easy jobs</Link>
 
         <Suspense fallback="Loading...">
@@ -67,10 +68,8 @@ const Layout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
       </header>
 
       <main
-        className="flex flex-col items-center justify-center py-2"
-        style={{
-          height: "calc(100vh - 80px)",
-        }}
+        className={`flex flex-col items-center justify-center py-2`}
+        style={{ ...bodyStyle, height: "calc(100vh - 80px)" }}
       >
         {children}
       </main>

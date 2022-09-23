@@ -7,14 +7,17 @@ import { useRouter } from "next/router"
 import Layout from "app/core/layouts/Layout"
 import getTrainings from "app/trainings/queries/getTrainings"
 import Card from "app/core/components/Card"
+import { Button } from "@chakra-ui/react"
 
 const ITEMS_PER_PAGE = 100
 
 export const TrainingsList = () => {
   const router = useRouter()
+
   const page = Number(router.query.page) || 0
   const [{ trainings, hasMore }] = usePaginatedQuery(getTrainings, {
     orderBy: { id: "asc" },
+    where: { type: "css" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
@@ -23,28 +26,35 @@ export const TrainingsList = () => {
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
   return (
-    <div>
-      <ul>
+    <div className="flex flex-col gap-4">
+      <ul className="flex flex-wrap gap-8">
         {trainings.map((training) => (
           <li key={training.id}>
-            <Link href={Routes.ShowTrainingPage({ trainingId: training.id })}>
-              <a>{training.name}</a>
-            </Link>
+            <Card>
+              <Link
+                href={Routes.ShowTrainingPage({ trainingId: training.id, type: training.type })}
+              >
+                <a>{training.name}</a>
+              </Link>
+            </Card>
           </li>
         ))}
       </ul>
 
-      <button disabled={page === 0} onClick={goToPreviousPage}>
-        Previous
-      </button>
-      <button disabled={!hasMore} onClick={goToNextPage}>
-        Next
-      </button>
+      <div className="flex gap-2">
+        <Button size={"xs"} bgColor="blue.500" disabled={page === 0} onClick={goToPreviousPage}>
+          Previous
+        </Button>
+        <Button size={"xs"} bgColor="blue.500" disabled={!hasMore} onClick={goToNextPage}>
+          Next
+        </Button>
+      </div>
     </div>
   )
 }
 
 const TrainingsCatePage = () => {
+  console.log(123)
   return (
     <Layout>
       <Head>
@@ -59,12 +69,10 @@ const TrainingsCatePage = () => {
         </p>
 
         <div className="flex gap-10 text-3xl">
-          <Card>CSS</Card>
-          <Card>JavaScript</Card>
+          <Suspense fallback={<div>Loading...</div>}>
+            <TrainingsList />
+          </Suspense>
         </div>
-        {/* <Suspense fallback={<div>Loading...</div>}>
-          <TrainingsList />
-        </Suspense> */}
       </div>
     </Layout>
   )

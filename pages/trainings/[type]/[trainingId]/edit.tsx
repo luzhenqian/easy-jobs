@@ -1,22 +1,19 @@
-import { Suspense } from "react";
-import { Routes } from "@blitzjs/next";
-import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useQuery, useMutation } from "@blitzjs/rpc";
-import { useParam } from "@blitzjs/next";
+import { Suspense } from "react"
+import { Routes } from "@blitzjs/next"
+import Head from "next/head"
+import Link from "next/link"
+import { useRouter } from "next/router"
+import { useQuery, useMutation } from "@blitzjs/rpc"
+import { useParam } from "@blitzjs/next"
 
-import Layout from "app/core/layouts/Layout";
-import getTraining from "app/trainings/queries/getTraining";
-import updateTraining from "app/trainings/mutations/updateTraining";
-import {
-  TrainingForm,
-  FORM_ERROR,
-} from "app/trainings/components/TrainingForm";
+import Layout from "app/core/layouts/Layout"
+import getTraining from "app/trainings/queries/getTraining"
+import updateTraining from "app/trainings/mutations/updateTraining"
+import { TrainingForm, FORM_ERROR } from "app/trainings/components/TrainingForm"
 
 export const EditTraining = () => {
-  const router = useRouter();
-  const trainingId = useParam("trainingId", "number");
+  const router = useRouter()
+  const trainingId = useParam("trainingId", "number")
   const [training, { setQueryData }] = useQuery(
     getTraining,
     { id: trainingId },
@@ -24,8 +21,8 @@ export const EditTraining = () => {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
     }
-  );
-  const [updateTrainingMutation] = useMutation(updateTraining);
+  )
+  const [updateTrainingMutation] = useMutation(updateTraining)
 
   return (
     <>
@@ -49,21 +46,23 @@ export const EditTraining = () => {
               const updated = await updateTrainingMutation({
                 id: training.id,
                 ...values,
-              });
-              await setQueryData(updated);
-              router.push(Routes.ShowTrainingPage({ trainingId: updated.id }));
+              })
+              await setQueryData(updated)
+              void router.push(
+                Routes.ShowTrainingPage({ trainingId: updated.id, type: updated.type })
+              )
             } catch (error: any) {
-              console.error(error);
+              console.error(error)
               return {
                 [FORM_ERROR]: error.toString(),
-              };
+              }
             }
           }}
         />
       </div>
     </>
-  );
-};
+  )
+}
 
 const EditTrainingPage = () => {
   return (
@@ -78,10 +77,10 @@ const EditTrainingPage = () => {
         </Link>
       </p>
     </div>
-  );
-};
+  )
+}
 
-EditTrainingPage.authenticate = true;
-EditTrainingPage.getLayout = (page) => <Layout>{page}</Layout>;
+EditTrainingPage.authenticate = true
+EditTrainingPage.getLayout = (page) => <Layout>{page}</Layout>
 
-export default EditTrainingPage;
+export default EditTrainingPage
