@@ -11,7 +11,7 @@ const Home: BlitzPage = () => {
         <Card>
           <h1 className="m-10 text-4xl font-bold">
             <Link href="/trainings">
-              <a>training</a>
+              <a>练习题</a>
             </Link>
           </h1>
         </Card>

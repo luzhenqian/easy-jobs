@@ -1,6 +1,5 @@
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
-import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
 import Layout from "app/core/layouts/Layout"
 import createTraining from "app/trainings/mutations/createTraining"

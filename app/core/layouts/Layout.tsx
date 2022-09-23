@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import logout from "app/auth/mutations/logout"
 import { useMutation } from "@blitzjs/rpc"
-import { Routes, BlitzPage } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 import { Avatar, Button, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react"
 
 const UserInfo = () => {
@@ -69,6 +69,7 @@ const Layout: BlitzLayout<{
 
       <main
         className={`flex flex-col items-center justify-center py-2`}
+        // @ts-ignore
         style={{ ...bodyStyle, height: "calc(100vh - 80px)" }}
       >
         {children}

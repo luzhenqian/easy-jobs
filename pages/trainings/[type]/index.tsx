@@ -8,6 +8,8 @@ import Layout from "app/core/layouts/Layout"
 import getTrainings from "app/trainings/queries/getTrainings"
 import Card from "app/core/components/Card"
 import { Button, CircularProgress } from "@chakra-ui/react"
+import { useCurrentUser } from "app/core/hooks/useCurrentUser"
+import Loading from "app/core/components/Loading"
 
 const ITEMS_PER_PAGE = 100
 
@@ -57,8 +59,19 @@ export const TrainingsList = () => {
   )
 }
 
+const Create = () => {
+  const currentUser = useCurrentUser()
+  if (currentUser?.role !== "ADMIN") return null
+  return (
+    <Button bgColor={"blue.500"} _hover={{ background: "blue.300" }} className="text-xl">
+      <Link href={Routes.NewTrainingPage()}>
+        <a>创建练习题</a>
+      </Link>
+    </Button>
+  )
+}
+
 const TrainingsCatePage = () => {
-  console.log(123)
   return (
     <Layout>
       <Head>
@@ -66,21 +79,12 @@ const TrainingsCatePage = () => {
       </Head>
 
       <div className="flex flex-col gap-4">
-        <Button bgColor={"blue.500"} _hover={{ background: "blue.300" }} className="text-xl">
-          <Link href={Routes.NewTrainingPage()}>
-            <a>创建练习题</a>
-          </Link>
-        </Button>
+        <Suspense fallback="Loading...">
+          <Create />
+        </Suspense>
 
         <div className="flex gap-10 text-3xl">
-          <Suspense
-            fallback={
-              <div className="flex justify-center items-center flex-col m-auto">
-                <CircularProgress isIndeterminate color="green.300" />
-                <div className="text-sm">加载中...</div>
-              </div>
-            }
-          >
+          <Suspense fallback={<Loading />}>
             <TrainingsList />
           </Suspense>
         </div>
