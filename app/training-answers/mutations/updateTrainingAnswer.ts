@@ -2,8 +2,8 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { z } from "zod"
 import { toPng } from "html-to-image"
-// const puppeteer = require("puppeteer")
-import chromium from "chrome-aws-lambda"
+import chrome from "chrome-aws-lambda"
+import puppeteer from "puppeteer-core"
 
 const UpdateTrainingAnswer = z.object({
   id: z.number(),
@@ -28,7 +28,24 @@ export default resolver.pipe(
       const answer = await db.trainingAnswer.findUnique({ where: { id } })
       const { trainingId } = answer!
       const training = await db.training.findFirst({ where: { recordId: trainingId } })
-      const browser = await chromium.puppeteer.launch()
+
+      const options = process.env.AWS_REGION
+        ? {
+            args: chrome.args,
+            executablePath: await chrome.executablePath,
+            headless: chrome.headless,
+          }
+        : {
+            args: [],
+            executablePath:
+              process.platform === "win32"
+                ? "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+                : process.platform === "linux"
+                ? "/usr/bin/google-chrome"
+                : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+          }
+
+      const browser = await puppeteer.launch(options)
       const originPage = await browser.newPage()
       console.log(data.code.html, "html")
       console.log(data.code.css, "css")
