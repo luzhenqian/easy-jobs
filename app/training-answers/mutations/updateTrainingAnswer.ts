@@ -25,9 +25,14 @@ export default resolver.pipe(
         data,
       })
     } else {
-      const training = await db.training.findFirst({ where: { id } })
+      const answer = await db.trainingAnswer.findUnique({ where: { id } })
+      const { trainingId } = answer!
+      const training = await db.training.findFirst({ where: { recordId: trainingId } })
       const browser = await puppeteer.launch()
       const originPage = await browser.newPage()
+      console.log(data.code.html, "html")
+      console.log(data.code.css, "css")
+
       await originPage.setContent(`${data.code.html}<style>${data.code.css}</style>`)
       const originImageBinary = await originPage.screenshot({
         encoding: "binary",
@@ -36,10 +41,12 @@ export default resolver.pipe(
       await targetPage.setContent(
         `${(training?.code as any).html}<style>${(training?.code as any).css}</style>`
       )
-      const targetImageBinary = await originPage.screenshot({
+      const targetImageBinary = await targetPage.screenshot({
         encoding: "binary",
       })
       let pass = false
+      console.log(originImageBinary, targetImageBinary)
+
       if (originImageBinary.equals(targetImageBinary)) {
         pass = true
       }

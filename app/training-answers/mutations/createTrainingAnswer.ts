@@ -9,7 +9,6 @@ const CreateTrainingAnswer = z.object({
     html: z.string(),
     css: z.string(),
   }),
-  isDraft: z.boolean(),
 })
 
 export default resolver.pipe(
@@ -21,6 +20,7 @@ export default resolver.pipe(
       data: {
         ...input,
         pass: false,
+        isDraft: true,
       },
     })
 

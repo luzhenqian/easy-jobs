@@ -38,7 +38,10 @@ export const TrainingsList = () => {
           <li key={training.id}>
             <Card>
               <Link
-                href={Routes.ShowTrainingPage({ trainingId: training.id, type: training.type })}
+                href={Routes.ShowTrainingPage({
+                  trainingId: training.recordId,
+                  type: training.type,
+                })}
               >
                 <a>{training.name}</a>
               </Link>

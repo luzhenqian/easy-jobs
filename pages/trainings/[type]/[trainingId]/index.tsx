@@ -3,7 +3,7 @@ import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useQuery, useMutation } from "@blitzjs/rpc"
+import { useQuery, useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 
 import Layout from "app/core/layouts/Layout"
@@ -27,14 +27,15 @@ import Monaco from "@monaco-editor/react"
 import createTrainingAnswer from "app/training-answers/mutations/createTrainingAnswer"
 import getTrainingAnswers from "app/training-answers/queries/getTrainingAnswers"
 import updateTrainingAnswer from "app/training-answers/mutations/updateTrainingAnswer"
+import getTrainings from "app/trainings/queries/getTrainings"
 
 export const Training = () => {
   const router = useRouter()
 
-  const trainingId = useParam("trainingId", "number")
+  const trainingId = useParam("trainingId", "string")
   const [deleteTrainingMutation] = useMutation(deleteTraining)
-  const [training] = useQuery(getTraining, { id: trainingId })
-
+  const [{ trainings }] = useQuery(getTrainings, { where: { recordId: trainingId } })
+  const training = trainings[0]!
   return (
     <>
       <Head>
@@ -71,6 +72,7 @@ const Do = () => {
   const [updateTrainingAnswerMutation] = useMutation(updateTrainingAnswer)
   const user = useCurrentUser()!
   const router = useRouter()
+  const type = useParam("type", "string")
   const [{ trainingAnswers, hasMore }] = useQuery(getTrainingAnswers, {
     where: {
       trainingId: router.query.trainingId as string,
@@ -80,13 +82,23 @@ const Do = () => {
   })
   const currentDraft = trainingAnswers[0]
 
-  const trainingId = useParam("trainingId", "number")
-  const [training] = useQuery(getTraining, { id: trainingId })
+  const trainingId = useParam("trainingId", "string")
+  const [{ trainings }] = usePaginatedQuery(getTrainings, { where: { recordId: trainingId } })
+  const training = trainings[0]!
   const [layout, setLayout] = useState<string[]>(["CSS", "HTML", "cur", "target"])
   const [code, setCode] = useState({
-    html: (currentDraft?.code as any).html || "",
-    css: (currentDraft?.code as any).css || "",
+    html: "",
+    css: "",
   })
+
+  useEffect(() => {
+    if (currentDraft) {
+      setCode({
+        html: (currentDraft.code as any).html,
+        css: (currentDraft.code as any).css,
+      })
+    }
+  }, [currentDraft])
 
   const cssRef = useRef()
   const htmlRef = useRef()
@@ -129,7 +141,6 @@ const Do = () => {
         html: "",
         css: "",
       },
-      isDraft: true,
     })
     setSubmitting(false)
   }
@@ -146,7 +157,6 @@ const Do = () => {
         userId: user.recordId,
         trainingId: router.query.trainingId as string,
         code,
-        isDraft: true,
       })
     }
   }, [code, router.query.trainingId, user])
@@ -165,7 +175,11 @@ const Do = () => {
         </Stack>
 
         <div className="flex gap-4">
-          <Button>历史记录</Button>
+          <Button>
+            <Link href={`/trainings/${type}/${trainingId}/history`}>
+              <a>历史记录</a>
+            </Link>
+          </Button>
           <Button
             backgroundColor={"blue.500"}
             color={"white"}
@@ -218,7 +232,7 @@ const Do = () => {
 
 const Main = () => {
   const currentUser = useCurrentUser()
-  if (currentUser?.role === "ADMIN1") {
+  if (currentUser?.role === "ADMIN") {
     return (
       <>
         <Tabs>
