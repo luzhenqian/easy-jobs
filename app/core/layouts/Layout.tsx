@@ -70,7 +70,7 @@ const Layout: BlitzLayout<{
       <main
         className={`flex flex-col items-center justify-center py-2`}
         // @ts-ignore
-        style={{ ...bodyStyle, height: "calc(100vh - 80px)" }}
+        style={{ ...bodyStyle, minHeight: "calc(100vh - 80px)" }}
       >
         {children}
       </main>

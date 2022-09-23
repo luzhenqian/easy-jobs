@@ -23,6 +23,7 @@ model User {
 
   tokens   Token[]
   sessions Session[]
+  recordId String    @default(uuid())
 }
 
 model Session {
@@ -81,4 +82,16 @@ model Training {
   cssFramework Json
   code         Json
   name         String
+}
+
+model TrainingAnswer {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  recordId   String   @default(uuid())
+  code       Json
+  userId     String   @default(uuid())
+  trainingId String   @default(uuid())
+  isDraft    Boolean
+  pass       Boolean
 }

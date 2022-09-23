@@ -1,4 +1,4 @@
-import { Suspense, useRef, useState } from "react"
+import { Suspense, useEffect, useRef, useState } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
@@ -21,8 +21,12 @@ import {
   TabPanels,
   Tabs,
   Stack,
+  Heading,
 } from "@chakra-ui/react"
 import Monaco from "@monaco-editor/react"
+import createTrainingAnswer from "app/training-answers/mutations/createTrainingAnswer"
+import getTrainingAnswers from "app/training-answers/queries/getTrainingAnswers"
+import updateTrainingAnswer from "app/training-answers/mutations/updateTrainingAnswer"
 
 export const Training = () => {
   const router = useRouter()
@@ -63,11 +67,26 @@ export const Training = () => {
 }
 
 const Do = () => {
+  const [createTrainingAnswerMutation] = useMutation(createTrainingAnswer)
+  const [updateTrainingAnswerMutation] = useMutation(updateTrainingAnswer)
+  const user = useCurrentUser()!
   const router = useRouter()
+  const [{ trainingAnswers, hasMore }] = useQuery(getTrainingAnswers, {
+    where: {
+      trainingId: router.query.trainingId as string,
+      userId: user.recordId,
+      isDraft: true,
+    },
+  })
+  const currentDraft = trainingAnswers[0]
+
   const trainingId = useParam("trainingId", "number")
   const [training] = useQuery(getTraining, { id: trainingId })
-  const [layout, setLayout] = useState<string[]>(["CSS", "HTML"])
-  const [code, setCode] = useState({ html: "", css: "" })
+  const [layout, setLayout] = useState<string[]>(["CSS", "HTML", "cur", "target"])
+  const [code, setCode] = useState({
+    html: (currentDraft?.code as any).html || "",
+    css: (currentDraft?.code as any).css || "",
+  })
 
   const cssRef = useRef()
   const htmlRef = useRef()
@@ -92,9 +111,50 @@ const Do = () => {
     }, 1_000)
   }
 
+  const [submitting, setSubmitting] = useState(false)
+  async function submit() {
+    if (!currentDraft) {
+      return ""
+    }
+    setSubmitting(true)
+    await updateTrainingAnswerMutation({
+      id: currentDraft.id,
+      code,
+      isDraft: false,
+    })
+    await createTrainingAnswerMutation({
+      userId: user.recordId,
+      trainingId: router.query.trainingId as string,
+      code: {
+        html: "",
+        css: "",
+      },
+      isDraft: true,
+    })
+    setSubmitting(false)
+  }
+  useEffect(() => {
+    if (currentDraft) {
+      void updateTrainingAnswerMutation({
+        id: currentDraft.id,
+        code,
+        isDraft: true,
+      })
+    } else {
+      if (!user || !user.recordId) return
+      void createTrainingAnswerMutation({
+        userId: user.recordId,
+        trainingId: router.query.trainingId as string,
+        code,
+        isDraft: true,
+      })
+    }
+  }, [code, router.query.trainingId, user])
+
   return (
-    <div>
-      <div>
+    <div className="flex flex-col gap-4">
+      <Heading size={"md"}>{training.name}</Heading>
+      <div className="flex justify-between px-4">
         <Stack spacing={4} direction="row">
           <CheckboxGroup defaultValue={layout} onChange={(e) => setLayout([...(e as string[])])}>
             <Checkbox value="HTML">HTML</Checkbox>
@@ -103,6 +163,18 @@ const Do = () => {
             <Checkbox value="target">目标效果</Checkbox>
           </CheckboxGroup>
         </Stack>
+
+        <div className="flex gap-4">
+          <Button>历史记录</Button>
+          <Button
+            backgroundColor={"blue.500"}
+            color={"white"}
+            onClick={submit}
+            disabled={submitting}
+          >
+            提交
+          </Button>
+        </div>
       </div>
       <div className="flex h-[400px] w-full">
         {layout.includes("HTML") && (
@@ -140,17 +212,13 @@ const Do = () => {
           ></iframe>
         )}
       </div>
-      <div>
-        <Button>历史记录</Button>
-        <Button>提交</Button>
-      </div>
     </div>
   )
 }
 
 const Main = () => {
   const currentUser = useCurrentUser()
-  if (currentUser?.role === "ADMIN") {
+  if (currentUser?.role === "ADMIN1") {
     return (
       <>
         <Tabs>
@@ -175,17 +243,22 @@ const Main = () => {
       </>
     )
   }
-  return <Do />
+  return (
+    <div className="w-full min-w-[1200px] min-h-[800px]">
+      <Do />
+    </div>
+  )
 }
 
 const ShowTrainingPage = () => {
+  const router = useRouter()
   return (
-    <div>
-      <p>
-        <Link href={Routes.TrainingsPage()}>
-          <a>Trainings</a>
+    <div className="w-full flex justify-center items-center flex-col gap-4">
+      <Button size={"md"} className="self-start">
+        <Link href={Routes.TrainingsCatePage({ type: router.query.type as string })}>
+          <a>返回 {router.query.type} 练习题列表</a>
         </Link>
-      </p>
+      </Button>
 
       <Suspense fallback={<Loading />}>
         <Main />
