@@ -108,6 +108,7 @@ const Do = () => {
         {layout.includes("HTML") && (
           <div className="w-0 flex-1 border border-gray-400">
             <Monaco
+              language="html"
               defaultValue={code.html}
               onMount={handleHTMLEditorDidMount}
               onChange={handleHTMLEditorChange}
@@ -117,6 +118,7 @@ const Do = () => {
         {layout.includes("CSS") && (
           <div className="w-0 flex-1  border border-gray-400">
             <Monaco
+              language="css"
               defaultValue={code.css}
               onMount={handleCSSEditorDidMount}
               onChange={handleCSSEditorChange}
