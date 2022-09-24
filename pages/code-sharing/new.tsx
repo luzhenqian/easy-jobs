@@ -1,17 +1,14 @@
-import { Routes } from "@blitzjs/next";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useMutation } from "@blitzjs/rpc";
-import Layout from "app/core/layouts/Layout";
-import createCodeSharing from "app/code-sharings/mutations/createCodeSharing";
-import {
-  CodeSharingForm,
-  FORM_ERROR,
-} from "app/code-sharings/components/CodeSharingForm";
+import { Routes } from "@blitzjs/next"
+import Link from "next/link"
+import { useRouter } from "next/router"
+import { useMutation } from "@blitzjs/rpc"
+import Layout from "app/core/layouts/Layout"
+import createCodeSharing from "app/code-sharings/mutations/createCodeSharing"
+import { CodeSharingForm, FORM_ERROR } from "app/code-sharings/components/CodeSharingForm"
 
 const NewCodeSharingPage = () => {
-  const router = useRouter();
-  const [createCodeSharingMutation] = useMutation(createCodeSharing);
+  const router = useRouter()
+  const [createCodeSharingMutation] = useMutation(createCodeSharing)
 
   return (
     <Layout title={"Create New CodeSharing"}>
@@ -26,28 +23,26 @@ const NewCodeSharingPage = () => {
         // initialValues={{}}
         onSubmit={async (values) => {
           try {
-            const codeSharing = await createCodeSharingMutation(values);
-            router.push(
-              Routes.ShowCodeSharingPage({ codeSharingId: codeSharing.id })
-            );
+            const codeSharing = await createCodeSharingMutation(values)
+            void router.push(Routes.CodeSharingPage({ codeSharingId: codeSharing.id }))
           } catch (error: any) {
-            console.error(error);
+            console.error(error)
             return {
               [FORM_ERROR]: error.toString(),
-            };
+            }
           }
         }}
       />
 
       <p>
-        <Link href={Routes.CodeSharingsPage()}>
+        <Link href={Routes.CodeSharingPage()}>
           <a>CodeSharings</a>
         </Link>
       </p>
     </Layout>
-  );
-};
+  )
+}
 
-NewCodeSharingPage.authenticate = true;
+NewCodeSharingPage.authenticate = true
 
-export default NewCodeSharingPage;
+export default NewCodeSharingPage

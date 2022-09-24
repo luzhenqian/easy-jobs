@@ -27,11 +27,11 @@ export const CodeSharingsList = () => {
         {codeSharings.map((codeSharing) => (
           <li key={codeSharing.id}>
             <Link
-              href={Routes.ShowCodeSharingPage({
+              href={Routes.CodeSharingPage({
                 codeSharingId: codeSharing.id,
               })}
             >
-              <a>{codeSharing.name}</a>
+              <a>{codeSharing.id}</a>
             </Link>
           </li>
         ))}
