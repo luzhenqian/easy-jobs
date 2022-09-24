@@ -7,27 +7,29 @@ const Home: BlitzPage = () => {
   return (
     <Layout title="Home">
       <main className="grid grid-cols-2 w-[800px] m-auto gap-8">
-        <Card>
-          <h1 className="flex justify-center items-center m-10 text-4xl font-bold">
-            <Link href="/trainings">
-              <a>练习题</a>
-            </Link>
-          </h1>
-        </Card>
-        <Card>
-          <h1 className="flex justify-center items-center m-10 text-4xl font-bold">
-            <Link href="/code-sharing">
-              <a>代码分享</a>
-            </Link>
-          </h1>
-        </Card>
-        <Card>
-          <h1 className="flex justify-center items-center m-10 text-4xl font-bold">
-            <Link href="/homepage">
-              <a>个人网站</a>
-            </Link>
-          </h1>
-        </Card>
+        <Link href="/trainings">
+          <a>
+            <Card className="p-8 w-full flex justify-center">
+              <h1 className="flex justify-center items-center m-10 text-4xl font-bold">练习题</h1>
+            </Card>
+          </a>
+        </Link>
+
+        <Link href="/code-sharing">
+          <a>
+            <Card className="p-8 w-full flex justify-center">
+              <h1 className="flex justify-center items-center m-10 text-4xl font-bold">代码分享</h1>
+            </Card>
+          </a>
+        </Link>
+
+        <Link href="/homepage">
+          <a>
+            <Card className="p-8 w-full flex justify-center">
+              <h1 className="flex justify-center items-center m-10 text-4xl font-bold">个人网站</h1>
+            </Card>
+          </a>
+        </Link>
       </main>
     </Layout>
   )

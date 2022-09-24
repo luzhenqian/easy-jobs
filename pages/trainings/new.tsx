@@ -33,7 +33,7 @@ const NewTrainingPage = () => {
       title={"创建练习题"}
       // bodyStyle={{ justifyContent: "flex-start", alignItems: "flex-start" }}
     >
-      <div className="flex flex-col">
+      <div className="w-[800px] m-auto flex flex-col">
         <h1 className="text-2xl">创建新的练习题目</h1>
 
         <div className="flex">

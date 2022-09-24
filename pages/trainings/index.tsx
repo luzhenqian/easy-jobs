@@ -16,16 +16,17 @@ const TrainingsPage = () => {
       </Head>
 
       <div className="grid grid-cols-2 w-[800px] m-auto gap-8">
-        <Card>
-          <Link href="/trainings/css">
-            <a>CSS</a>
-          </Link>
-        </Card>
-        <Card>
-          <Link href="/trainings/js">
-            <a>JavaScript</a>
-          </Link>
-        </Card>
+        <Link href="/trainings/css">
+          <a>
+            <Card className="p-8 w-full flex justify-center">CSS</Card>
+          </a>
+        </Link>
+
+        <Link href="/trainings/js">
+          <a>
+            <Card className="p-8 w-full flex justify-center">JavaScript</Card>
+          </a>
+        </Link>
       </div>
     </Layout>
   )

@@ -7,18 +7,19 @@ import { useRouter } from "next/router"
 import Layout from "app/core/layouts/Layout"
 import getTrainings from "app/trainings/queries/getTrainings"
 import Card from "app/core/components/Card"
-import { Button, CircularProgress } from "@chakra-ui/react"
+import { Button, Table, Thead, Tbody, Tr, Td, Th } from "@chakra-ui/react"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import Loading from "app/core/components/Loading"
 
-const ITEMS_PER_PAGE = 100
+const ITEMS_PER_PAGE = 10
 
 export const TrainingsList = () => {
   const router = useRouter()
   const type = useParam("type", "string")
+  const currentUser = useCurrentUser()
 
   const page = Number(router.query.page) || 0
-  const [{ trainings, hasMore }] = usePaginatedQuery(getTrainings, {
+  const [{ trainings, hasMore, count }] = usePaginatedQuery(getTrainings, {
     orderBy: { id: "asc" },
     where: { type },
     skip: ITEMS_PER_PAGE * page,
@@ -32,32 +33,47 @@ export const TrainingsList = () => {
     return <div>暂无题目</div>
   }
   return (
-    <div className="flex flex-col gap-4">
-      <ul className="flex flex-wrap gap-8">
-        {trainings.map((training) => (
-          <li key={training.id}>
-            <Card>
-              <Link
-                href={Routes.ShowTrainingPage({
-                  trainingId: training.recordId,
-                  type: training.type,
-                })}
-              >
-                <a>{training.name}</a>
-              </Link>
-            </Card>
-          </li>
-        ))}
-      </ul>
+    <div className="flex flex-col gap-4 text-sm">
+      <Table>
+        <Thead>
+          <Tr>
+            <Th>题号</Th>
+            <Th>题目</Th>
+            {/* <Th>状态</Th> */}
+          </Tr>
+        </Thead>
+        <Tbody>
+          {trainings.map((training) => (
+            <a
+              href={
+                currentUser?.role === "ADMIN"
+                  ? `/trainings/${training.type}/admin/${training.recordId}`
+                  : `/trainings/${training.type}/${training.recordId}`
+              }
+              key={training.id}
+              target={currentUser?.role === "ADMIN" ? "" : "_blank"}
+              rel="noreferrer"
+            >
+              <Tr className="cursor-pointer">
+                <Td>{training.id}</Td>
+                <Td>{training.name}</Td>
+                {/* <Td>未通过</Td> */}
+              </Tr>
+            </a>
+          ))}
+        </Tbody>
+      </Table>
 
-      <div className="flex gap-2">
-        <Button size={"xs"} bgColor="blue.500" disabled={page === 0} onClick={goToPreviousPage}>
-          Previous
-        </Button>
-        <Button size={"xs"} bgColor="blue.500" disabled={!hasMore} onClick={goToNextPage}>
-          Next
-        </Button>
-      </div>
+      {count > ITEMS_PER_PAGE ? (
+        <div className="flex gap-2">
+          <Button size={"xs"} bgColor="blue.500" disabled={page === 0} onClick={goToPreviousPage}>
+            Previous
+          </Button>
+          <Button size={"xs"} bgColor="blue.500" disabled={!hasMore} onClick={goToNextPage}>
+            Next
+          </Button>
+        </div>
+      ) : null}
     </div>
   )
 }
@@ -81,16 +97,11 @@ const TrainingsCatePage = () => {
         <title>Trainings</title>
       </Head>
 
-      <div className="flex flex-col gap-4">
-        <Suspense fallback="Loading...">
+      <div className="flex flex-col  gap-10 text-3xl w-[800px] m-auto">
+        <Suspense fallback={<Loading />}>
           <Create />
+          <TrainingsList />
         </Suspense>
-
-        <div className="flex gap-10 text-3xl">
-          <Suspense fallback={<Loading />}>
-            <TrainingsList />
-          </Suspense>
-        </div>
       </div>
     </Layout>
   )
