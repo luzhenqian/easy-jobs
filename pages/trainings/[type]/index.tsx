@@ -2,14 +2,14 @@ import { Suspense } from "react"
 import { Routes, useParam } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
-import { usePaginatedQuery } from "@blitzjs/rpc"
+import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import Layout from "app/core/layouts/Layout"
 import getTrainings from "app/trainings/queries/getTrainings"
-import Card from "app/core/components/Card"
 import { Button, Table, Thead, Tbody, Tr, Td, Th } from "@chakra-ui/react"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import Loading from "app/core/components/Loading"
+import getTrainingAnswers from "app/training-answers/queries/getTrainingAnswers"
 
 const ITEMS_PER_PAGE = 10
 
@@ -26,6 +26,16 @@ export const TrainingsList = () => {
     take: ITEMS_PER_PAGE,
   })
 
+  const [{ trainingAnswers }] = useQuery(getTrainingAnswers, {
+    where: {
+      trainingId: {
+        in: trainings.map((training) => training.recordId),
+      },
+      pass: true,
+      userId: currentUser?.recordId || "",
+    },
+  })
+
   const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
@@ -39,27 +49,32 @@ export const TrainingsList = () => {
           <Tr>
             <Th>题号</Th>
             <Th>题目</Th>
-            {/* <Th>状态</Th> */}
+            <Th>状态</Th>
           </Tr>
         </Thead>
         <Tbody>
           {trainings.map((training) => (
-            <a
-              href={
-                currentUser?.role === "ADMIN"
-                  ? `/trainings/${training.type}/admin/${training.recordId}`
-                  : `/trainings/${training.type}/${training.recordId}`
-              }
-              key={training.id}
-              target={currentUser?.role === "ADMIN" ? "" : "_blank"}
-              rel="noreferrer"
-            >
-              <Tr className="cursor-pointer">
-                <Td>{training.id}</Td>
-                <Td>{training.name}</Td>
-                {/* <Td>未通过</Td> */}
-              </Tr>
-            </a>
+            <Tr className="cursor-pointer" key={training.id}>
+              <Td>{training.id}</Td>
+              <Td>
+                <a
+                  href={
+                    currentUser?.role === "ADMIN"
+                      ? `/trainings/${training.type}/admin/${training.recordId}`
+                      : `/trainings/${training.type}/${training.recordId}`
+                  }
+                  target={currentUser?.role === "ADMIN" ? "" : "_blank"}
+                  rel="noreferrer"
+                >
+                  {training.name}{" "}
+                </a>
+              </Td>
+              <Td>
+                {trainingAnswers.find((answers) => answers.trainingId === training.recordId)
+                  ? "通过"
+                  : "未通过"}
+              </Td>
+            </Tr>
           ))}
         </Tbody>
       </Table>
