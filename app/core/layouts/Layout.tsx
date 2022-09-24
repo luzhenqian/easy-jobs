@@ -1,5 +1,5 @@
 import Head from "next/head"
-import React, { FC, Suspense } from "react"
+import React, { Suspense } from "react"
 import { BlitzLayout } from "@blitzjs/next"
 import Link from "next/link"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
@@ -48,10 +48,11 @@ const UserInfo = () => {
 }
 
 const Layout: BlitzLayout<{
-  bodyStyle?: Partial<CSSStyleDeclaration>
+  actions?: React.ReactNode
+  headerStyle?: React.CSSProperties
   title?: string
   children?: React.ReactNode
-}> = ({ bodyStyle, title, children }) => {
+}> = ({ actions, headerStyle, title, children }) => {
   return (
     <>
       <Head>
@@ -59,21 +60,20 @@ const Layout: BlitzLayout<{
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header className={"flex items-center justify-between h-[80px] px-16 font-medium text-2xl"}>
+      <header
+        className={"flex items-center justify-between h-[80px] px-16 font-medium text-2xl"}
+        style={headerStyle}
+      >
         <Link href="/">easy jobs</Link>
+
+        {actions}
 
         <Suspense fallback="Loading...">
           <UserInfo />
         </Suspense>
       </header>
 
-      <main
-        className={`flex flex-col items-center justify-center py-2`}
-        // @ts-ignore
-        style={{ ...bodyStyle, minHeight: "calc(100vh - 80px)" }}
-      >
-        {children}
-      </main>
+      {children}
     </>
   )
 }

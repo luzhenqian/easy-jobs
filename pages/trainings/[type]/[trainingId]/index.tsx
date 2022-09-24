@@ -198,6 +198,7 @@ const Do = () => {
               defaultValue={code.html}
               onMount={handleHTMLEditorDidMount}
               onChange={handleHTMLEditorChange}
+              loading={<Loading />}
             ></Monaco>
           </div>
         )}
@@ -208,6 +209,7 @@ const Do = () => {
               defaultValue={code.css}
               onMount={handleCSSEditorDidMount}
               onChange={handleCSSEditorChange}
+              loading={<Loading />}
             ></Monaco>
           </div>
         )}

@@ -30,6 +30,7 @@
     "@chakra-ui/react": "2.3.4",
     "@emotion/react": "11.10.4",
     "@emotion/styled": "11.10.4",
+    "@floating-ui/react-dom": "1.0.0",
     "@monaco-editor/react": "4.4.5",
     "@prisma/client": "4.0.0",
     "axios": "0.27.2",
