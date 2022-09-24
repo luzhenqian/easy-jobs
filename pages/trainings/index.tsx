@@ -15,7 +15,7 @@ const TrainingsPage = () => {
         <title>Trainings</title>
       </Head>
 
-      <div className="flex gap-10 text-3xl">
+      <div className="grid grid-cols-2 w-[800px] m-auto gap-8">
         <Card>
           <Link href="/trainings/css">
             <a>CSS</a>
