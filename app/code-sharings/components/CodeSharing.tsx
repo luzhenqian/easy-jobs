@@ -10,7 +10,7 @@ import Loading from "app/core/components/Loading"
 import { useLocalStorage } from "app/core/hooks/useLocalStorage"
 import createCodeSharing from "app/code-sharings/mutations/createCodeSharing"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
-import { Link } from "app/core/components/Icons/link"
+import { ArrowDown, ArrowUp, Link } from "app/core/components/Icons"
 import useCopyToClipboard from "app/core/hooks/useCopyToClipboard"
 import getCodeSharings from "../queries/getCodeSharings"
 import { offset, useFloating } from "@floating-ui/react-dom"
@@ -27,6 +27,7 @@ const CodeSharing = () => {
 
   const user = useCurrentUser()
   const codeSharingId = useParam("codeSharingId", "string")
+
   const [lang, setLang] = useState<Lang>("html")
   const [codes, setCodes] = useLocalStorage<Codes>("codes", {
     html: "",
@@ -40,17 +41,17 @@ const CodeSharing = () => {
     editorRef.current = editor
     editorRef.current.setValue(codes[lang])
   }
+
+  const logEditorRef = useRef<any>()
+  const onLogMount = (editor) => {
+    logEditorRef.current = editor
+  }
   const onChange = (value) => {
     setCodes((prev) => ({ ...prev, [lang]: value }))
   }
   useEffect(() => {
     if (editorRef.current) editorRef.current.setValue(codes[lang])
   }, [lang])
-
-  useEffect(() => {
-    if (!canvasRef.current) return
-    canvasRef.current.srcdoc = `${codes.html}<style>${codes.css}</style><script>${codes.js}</script>`
-  }, [])
 
   const router = useRouter()
   const [sharing, setSharing] = useState(false)
@@ -72,10 +73,7 @@ const CodeSharing = () => {
       staleTime: Infinity,
     }
   )
-  count === 0 && router.replace("/404")
-  useEffect(() => {
-    setCodes((codeSharings[0] as any).code)
-  }, [])
+  codeSharingId && count === 0 && router.replace("/404")
 
   const [_, copy] = useCopyToClipboard()
   const [copied, setCopied] = useState(false)
@@ -84,9 +82,43 @@ const CodeSharing = () => {
     placement: "top",
     middleware: [offset(-60)],
   })
+
+  const [logs, setLogs] = useState<{ type: "log" | "error" | "info"; args: any }[]>([])
   useEffect(() => {
     if (typeof window !== "undefined") reference(document.body)
+    function onMessage(e) {
+      if (((e.data.type as string) || "").includes("console")) {
+        console.log("e", e.data)
+        setLogs((prev) => [...prev, e.data])
+      }
+    }
+    window.addEventListener("message", onMessage)
+
+    if (codeSharingId) setCodes((codeSharings[0] as any).code)
+
+    if (canvasRef.current)
+      canvasRef.current.srcdoc = `${codes.html}<style>${codes.css}</style><script>${codes.js}</script>`
+    return () => {
+      window.removeEventListener("message", onMessage)
+    }
   }, [])
+
+  const [consoleOpen, setConsoleOpen] = useState(false)
+  useEffect(() => {
+    setLogs([])
+  }, [codes])
+  useEffect(() => {
+    let timer: any = null
+    if (consoleOpen === true) {
+      timer = setInterval(() => {
+        if (logEditorRef.current) {
+          logEditorRef.current.setValue(logs.map((log) => log.args).join("\n"))
+          timer && clearInterval(timer)
+        }
+      }, 5_0)
+    }
+    return () => timer && clearInterval(timer)
+  }, [logs, consoleOpen])
   return (
     <Layout
       headerStyle={{
@@ -167,7 +199,7 @@ const CodeSharing = () => {
             </span>
             <span
               className={`${lang === "js" ? "text-blue-500" : ""} cursor-pointer`}
-              onClick={setLang.bind(null, "js")}
+              onClick={() => setLang("js")}
             >
               JavaScript
             </span>
@@ -182,12 +214,48 @@ const CodeSharing = () => {
             ></Editor>
           </div>
         </div>
-        <div className="w-1/2">
+        <div className="flex flex-col w-1/2">
           <iframe
-            className="w-full h-full"
+            className="w-full flex-1"
             ref={canvasRef}
-            srcDoc={`${codes.html}<style>${codes.css}</style><script>${codes.js}</script>`}
+            srcDoc={`
+            <script>
+              var fns = new Map()
+              for(let key in console) {
+                fns.set(key, console[key])
+                console[key] = (...args) => {
+                  window.parent.postMessage({ type: 'console.' + key, args }, "*")
+                  return fns.get(key)(...args)
+                }
+              }
+            </script>
+            ${codes.html}<style>${codes.css}</style><script>${codes.js}</script>`}
           ></iframe>
+          <div
+            className="rounded-t-md
+          border-t-2
+          border-gray-100
+          bg-black text-gray-100"
+          >
+            <div className="flex justify-between items-center px-4 h-[40px]">
+              <div>控制台</div>
+              {consoleOpen ? (
+                <ArrowDown
+                  size={"lg"}
+                  className="fill-white"
+                  onClick={() => setConsoleOpen(false)}
+                />
+              ) : (
+                <ArrowUp size={"lg"} className="fill-white" onClick={() => setConsoleOpen(true)} />
+              )}
+            </div>
+            {consoleOpen ? (
+              <div className="border-t border-gray-400 h-[300px]">
+                <div></div>
+                <Editor theme="vs-dark" onMount={onLogMount} options={{ readOnly: true }}></Editor>
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
     </Layout>
