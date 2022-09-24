@@ -94,7 +94,7 @@ const CodeSharing = () => {
     }
     window.addEventListener("message", onMessage)
 
-    if (codeSharingId) setCodes((codeSharings[0] as unknown as any).code)
+    if (codeSharingId) setCodes(((codeSharings as unknown as any)[0] as any).code)
 
     if (canvasRef.current)
       canvasRef.current.srcdoc = `${codes.html}<style>${codes.css}</style><script>${codes.js}</script>`
