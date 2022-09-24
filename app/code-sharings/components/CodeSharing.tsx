@@ -67,7 +67,7 @@ const CodeSharing = () => {
 
   const [{ codeSharings, count }] = useQuery(
     getCodeSharings,
-    { where: { recordId: codeSharingId } },
+    { where: { recordId: codeSharingId }, orderBy: { createdAt: "desc" }, take: 1, skip: 0 },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
