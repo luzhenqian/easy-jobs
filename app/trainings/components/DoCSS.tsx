@@ -1,35 +1,19 @@
-import { Suspense, useEffect, useRef, useState } from "react"
-import { Routes } from "@blitzjs/next"
-import Head from "next/head"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useQuery, useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-
 import Layout from "app/core/layouts/Layout"
-import getTraining from "app/trainings/queries/getTraining"
-import deleteTraining from "app/trainings/mutations/deleteTraining"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import Loading from "app/core/components/Loading"
-import {
-  Checkbox,
-  CheckboxGroup,
-  Button,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Stack,
-  Heading,
-} from "@chakra-ui/react"
+import { Button, Heading } from "@chakra-ui/react"
 import Monaco from "@monaco-editor/react"
 import createTrainingAnswer from "app/training-answers/mutations/createTrainingAnswer"
 import getTrainingAnswers from "app/training-answers/queries/getTrainingAnswers"
 import updateTrainingAnswer from "app/training-answers/mutations/updateTrainingAnswer"
 import getTrainings from "app/trainings/queries/getTrainings"
 
-export const Do = () => {
+export const DoCSS = () => {
   const [createTrainingAnswerMutation] = useMutation(createTrainingAnswer)
   const [updateTrainingAnswerMutation] = useMutation(updateTrainingAnswer)
   const user = useCurrentUser()!
@@ -175,9 +159,7 @@ export const Do = () => {
           {layout.html ? (
             <div className="flex flex-col flex-1 w-0">
               <div
-                className="py-2 px-8 text-lg
-            text-blue-400
-            border-r border-gray-200"
+                className="py-2 px-8 text-lg border border-gray-200 text-blue-400"
                 onClick={() => setLayout({ ...layout, html: !layout.html })}
               >
                 html
@@ -197,7 +179,7 @@ export const Do = () => {
             <div
               className="p-2 text-lg
           text-blue-400
-          border-r border-gray-200 [writing-mode:vertical-lr]"
+          border border-gray-200 [writing-mode:vertical-lr]"
               onClick={() => setLayout({ ...layout, html: !layout.html })}
             >
               html
@@ -206,8 +188,7 @@ export const Do = () => {
           {layout.css ? (
             <div className="flex flex-col flex-1 w-0">
               <div
-                className="py-2 px-8 text-lg
-text-blue-400"
+                className="py-2 px-8 text-lg border border-gray-200 text-blue-400"
                 onClick={() => setLayout({ ...layout, css: !layout.css })}
               >
                 css
@@ -227,7 +208,7 @@ text-blue-400"
             <div
               className="p-2 text-lg
           text-blue-400
-          border-r border-gray-200 [writing-mode:vertical-lr]"
+          border border-gray-200 [writing-mode:vertical-lr]"
               onClick={() => setLayout({ ...layout, css: !layout.css })}
             >
               css
@@ -236,8 +217,7 @@ text-blue-400"
           {layout.current ? (
             <div className="flex flex-col flex-1 w-0">
               <div
-                className="py-2 px-8 text-lg
-text-blue-400"
+                className="py-2 px-8 text-lg border border-gray-200 text-blue-400"
                 onClick={() => setLayout({ ...layout, current: !layout.current })}
               >
                 当前效果
@@ -251,7 +231,7 @@ text-blue-400"
             <div
               className="p-2 text-lg
           text-blue-400
-          border-r border-gray-200 [writing-mode:vertical-lr]"
+          border border-gray-200 [writing-mode:vertical-lr]"
               onClick={() => setLayout({ ...layout, current: !layout.current })}
             >
               当前效果
@@ -260,8 +240,7 @@ text-blue-400"
           {layout.target ? (
             <div className="flex flex-col flex-1 w-0">
               <div
-                className="py-2 px-8 text-lg
-        text-blue-400"
+                className="py-2 px-8 text-lg border border-gray-200        text-blue-400"
                 onClick={() => setLayout({ ...layout, target: !layout.target })}
               >
                 目标效果
@@ -277,7 +256,7 @@ text-blue-400"
             <div
               className="p-2 text-lg
           text-blue-400
-          border-r border-gray-200 [writing-mode:vertical-lr]"
+          border border-gray-200 [writing-mode:vertical-lr]"
               onClick={() => setLayout({ ...layout, target: !layout.target })}
             >
               目标效果

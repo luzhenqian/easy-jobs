@@ -28,7 +28,7 @@ import createTrainingAnswer from "app/training-answers/mutations/createTrainingA
 import getTrainingAnswers from "app/training-answers/queries/getTrainingAnswers"
 import updateTrainingAnswer from "app/training-answers/mutations/updateTrainingAnswer"
 import getTrainings from "app/trainings/queries/getTrainings"
-import { Do } from "app/trainings/components/Do"
+import { DoCSS } from "app/trainings/components/DoCSS"
 import SimpleBar from "simplebar-react"
 import "simplebar/dist/simplebar.min.css"
 import dynamic from "next/dynamic"

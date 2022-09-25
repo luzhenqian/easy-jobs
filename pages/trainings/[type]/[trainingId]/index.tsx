@@ -27,14 +27,13 @@ import Monaco from "@monaco-editor/react"
 import createTrainingAnswer from "app/training-answers/mutations/createTrainingAnswer"
 import getTrainingAnswers from "app/training-answers/queries/getTrainingAnswers"
 import updateTrainingAnswer from "app/training-answers/mutations/updateTrainingAnswer"
-import getTrainings from "app/trainings/queries/getTrainings"
-import { Do } from "app/trainings/components/Do"
+import { DoCSS } from "app/trainings/components/DoCSS"
 import PageLoading from "app/core/components/PageLoading"
 
 const DoTrainingPage = () => {
   return (
     <Suspense fallback={<PageLoading />}>
-      <Do />
+      <DoCSS />
     </Suspense>
   )
 }

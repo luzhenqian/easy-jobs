@@ -19,12 +19,11 @@ import {
 } from "@chakra-ui/react"
 import Loading from "app/core/components/Loading"
 import getTrainingAnswers from "app/training-answers/queries/getTrainingAnswers"
-import Card from "app/core/components/Card"
 import dayjs from "dayjs"
 
-const ITEMS_PER_PAGE = 100
+const ITEMS_PER_PAGE = 10
 
-export const TrainingsList = () => {
+export const TrainingsAnswerList = () => {
   const router = useRouter()
   const trainingId = useParam("trainingId", "string")
   const page = Number(router.query.page) || 0
@@ -43,35 +42,25 @@ export const TrainingsList = () => {
   }
   return (
     <div className="h-full w-full flex flex-col gap-4">
-      <ul className="flex flex-wrap gap-8">
-        <TableContainer>
-          <Table className="w-[400px]">
-            <Thead>
-              <Tr>
-                <Th>提交日期</Th>
-                <Th>结果</Th>
+      <TableContainer>
+        <Table>
+          <Thead>
+            <Tr>
+              <Th>提交时间</Th>
+              <Th>提交结果</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {trainingAnswers.map((trainingAnswer) => (
+              <Tr key={trainingAnswer.id} className="text-sm">
+                <Td>
+                  <a>{dayjs(trainingAnswer.updatedAt).format("YYYY年MM月DD日 hh:mm:ss")}</a>
+                </Td>
+                <Td>{trainingAnswer.pass ? "通过" : "未通过"}</Td>
               </Tr>
-            </Thead>
-            <Tbody>
-              {trainingAnswers.map((trainingAnswer) => (
-                <Tr
-                  key={trainingAnswer.id}
-                  backgroundColor={trainingAnswer.pass ? "green.400" : "red.400"}
-                  className="text-sm"
-                >
-                  <Td>
-                    {/* <Link
-                href={Routes.ShowTrainingPage({
-                  trainingId: trainingAnswer.id,
-                })}
-              > */}
-                    <a>{dayjs(trainingAnswer.updatedAt).format("YYYY年MM月DD日 hh:mm:ss")}</a>
-                    {/* </Link> */}
-                  </Td>
-                  <Td>{trainingAnswer.pass ? "通过" : "未通过"}</Td>
-                </Tr>
-              ))}
-            </Tbody>
+            ))}
+          </Tbody>
+          {trainingAnswers.length > 10 && (
             <Tfoot>
               <div className="flex gap-2 mt-4">
                 <Button
@@ -87,9 +76,9 @@ export const TrainingsList = () => {
                 </Button>
               </div>
             </Tfoot>
-          </Table>
-        </TableContainer>
-      </ul>
+          )}
+        </Table>
+      </TableContainer>
     </div>
   )
 }
@@ -101,12 +90,10 @@ const TrainingsHistoryPage = () => {
         <title>Trainings</title>
       </Head>
 
-      <div className="flex flex-col gap-4">
-        <div className="flex gap-10 text-3xl">
-          <Suspense fallback={<Loading />}>
-            <TrainingsList />
-          </Suspense>
-        </div>
+      <div className="w-[800px] m-auto flex flex-col gap-4">
+        <Suspense fallback={<Loading />}>
+          <TrainingsAnswerList />
+        </Suspense>
       </div>
     </Layout>
   )
