@@ -26,7 +26,15 @@ const Home: BlitzPage = () => {
         <Link href="/homepage">
           <a>
             <Card className="p-8 w-full flex justify-center">
-              <h1 className="flex justify-center items-center m-10 text-4xl font-bold">个人网站</h1>
+              <h1 className="flex justify-center items-center m-10 text-4xl font-bold">个人主页</h1>
+            </Card>
+          </a>
+        </Link>
+
+        <Link href="/resume">
+          <a>
+            <Card className="p-8 w-full flex justify-center">
+              <h1 className="flex justify-center items-center m-10 text-4xl font-bold">简历制作</h1>
             </Card>
           </a>
         </Link>

@@ -44,3 +44,27 @@ export const ArrowDown = ({ className, size = "md", ...props }: Props) => (
     <path d="M500.8 604.779L267.307 371.392l-45.227 45.27 278.741 278.613L779.307 416.66l-45.248-45.248z"></path>
   </svg>
 )
+
+export const Selected = ({ className, size = "md", ...props }: Props) => (
+  <svg
+    {...props}
+    className={`${className} ${sizeClassMap.get(size)}`}
+    viewBox="0 0 1024 1024"
+    version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M235.946667 472.938667l-45.226667 45.312 210.090667 209.514666 432.362666-427.690666-45.013333-45.482667-387.157333 382.976z"></path>
+  </svg>
+)
+
+export const Close = ({ className, size = "md", ...props }: Props) => (
+  <svg
+    {...props}
+    className={`${className} ${sizeClassMap.get(size)}`}
+    viewBox="0 0 1024 1024"
+    version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M282.517333 213.376l-45.354666 45.162667L489.472 512 237.162667 765.461333l45.354666 45.162667L534.613333 557.354667l252.096 253.269333 45.354667-45.162667-252.288-253.44 252.288-253.482666-45.354667-45.162667L534.613333 466.624l-252.096-253.226667z"></path>
+  </svg>
+)

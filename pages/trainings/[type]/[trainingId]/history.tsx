@@ -1,25 +1,14 @@
 import { Suspense } from "react"
-import { Routes, useParam } from "@blitzjs/next"
+import { useParam } from "@blitzjs/next"
 import Head from "next/head"
-import Link from "next/link"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import Layout from "app/core/layouts/Layout"
-import {
-  Button,
-  Table,
-  TableCaption,
-  TableContainer,
-  Tbody,
-  Td,
-  Tfoot,
-  Th,
-  Thead,
-  Tr,
-} from "@chakra-ui/react"
+import { Button, Table, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr } from "@chakra-ui/react"
 import Loading from "app/core/components/Loading"
 import getTrainingAnswers from "app/training-answers/queries/getTrainingAnswers"
 import dayjs from "dayjs"
+import { Close, Selected } from "app/core/components/Icons"
 
 const ITEMS_PER_PAGE = 10
 
@@ -54,9 +43,15 @@ export const TrainingsAnswerList = () => {
             {trainingAnswers.map((trainingAnswer) => (
               <Tr key={trainingAnswer.id} className="text-sm">
                 <Td>
-                  <a>{dayjs(trainingAnswer.updatedAt).format("YYYY年MM月DD日 hh:mm:ss")}</a>
+                  <a>{dayjs(trainingAnswer.updatedAt).format("YYYY年MM月DD日 HH:mm:ss")}</a>
                 </Td>
-                <Td>{trainingAnswer.pass ? "通过" : "未通过"}</Td>
+                <Td>
+                  {trainingAnswer.pass ? (
+                    <Selected className="fill-green-700" />
+                  ) : (
+                    <Close className="fill-red-700" />
+                  )}
+                </Td>
               </Tr>
             ))}
           </Tbody>
