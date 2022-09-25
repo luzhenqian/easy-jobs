@@ -24,6 +24,7 @@ model User {
   tokens   Token[]
   sessions Session[]
   recordId String    @default(uuid())
+  status   Int
 }
 
 model Session {
