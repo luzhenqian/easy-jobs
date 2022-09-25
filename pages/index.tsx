@@ -9,35 +9,35 @@ const Home: BlitzPage = () => {
       <main className="grid grid-cols-2 w-[800px] m-auto gap-8">
         <Link href="/trainings">
           <a>
-            <Card className="p-8 w-full flex justify-center">
-              <h1 className="flex justify-center items-center m-10 text-4xl font-bold">练习题</h1>
+            <Card className="flex justify-center w-full p-8">
+              <h1 className="flex items-center justify-center m-10 text-4xl font-bold">练习题</h1>
             </Card>
           </a>
         </Link>
 
         <Link href="/code-sharing">
           <a>
-            <Card className="p-8 w-full flex justify-center">
-              <h1 className="flex justify-center items-center m-10 text-4xl font-bold">代码分享</h1>
+            <Card className="flex justify-center w-full p-8">
+              <h1 className="flex items-center justify-center m-10 text-4xl font-bold">代码分享</h1>
             </Card>
           </a>
         </Link>
 
-        <Link href="/homepage">
+        {/* <Link href="/homepage">
           <a>
-            <Card className="p-8 w-full flex justify-center">
-              <h1 className="flex justify-center items-center m-10 text-4xl font-bold">个人主页</h1>
+            <Card className="flex justify-center w-full p-8">
+              <h1 className="flex items-center justify-center m-10 text-4xl font-bold">个人主页</h1>
             </Card>
           </a>
         </Link>
 
         <Link href="/resume">
           <a>
-            <Card className="p-8 w-full flex justify-center">
-              <h1 className="flex justify-center items-center m-10 text-4xl font-bold">简历制作</h1>
+            <Card className="flex justify-center w-full p-8">
+              <h1 className="flex items-center justify-center m-10 text-4xl font-bold">简历制作</h1>
             </Card>
           </a>
-        </Link>
+        </Link> */}
       </main>
     </Layout>
   )

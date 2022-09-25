@@ -4,8 +4,8 @@ import Head from "next/head"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import Layout from "app/core/layouts/Layout"
-import { Alert, AlertIcon, Button, calc } from "@chakra-ui/react"
-import Editor from "@monaco-editor/react"
+import { Alert, AlertIcon, Button } from "@chakra-ui/react"
+import Editor, { loader } from "@monaco-editor/react"
 import Loading from "app/core/components/Loading"
 import { useLocalStorage } from "app/core/hooks/useLocalStorage"
 import createCodeSharing from "app/code-sharings/mutations/createCodeSharing"
@@ -15,11 +15,17 @@ import useCopyToClipboard from "app/core/hooks/useCopyToClipboard"
 import getCodeSharings from "../queries/getCodeSharings"
 import { offset, useFloating } from "@floating-ui/react-dom"
 
-type Lang = "html" | "css" | "js"
+loader.config({
+  paths: {
+    vs: "/libs/monaco-editor@0.33.0",
+  },
+})
+
+type Lang = "html" | "css" | "javascript"
 type Codes = {
   html: string
   css: string
-  js: string
+  javascript: string
 }
 
 const CodeSharing = () => {
@@ -32,7 +38,7 @@ const CodeSharing = () => {
   const [codes, setCodes] = useLocalStorage<Codes>("codes", {
     html: "",
     css: "",
-    js: "",
+    javascript: "",
   })
 
   const editorRef = useRef<any>()
@@ -97,7 +103,7 @@ const CodeSharing = () => {
     if (codeSharingId) setCodes(((codeSharings as unknown as any)[0] as any).code)
 
     if (canvasRef.current)
-      canvasRef.current.srcdoc = `${codes.html}<style>${codes.css}</style><script>${codes.js}</script>`
+      canvasRef.current.srcdoc = `${codes.html}<style>${codes.css}</style><script>${codes.javascript}</script>`
     return () => {
       window.removeEventListener("message", onMessage)
     }
@@ -125,7 +131,7 @@ const CodeSharing = () => {
         height: "40px",
       }}
       actions={
-        <div className="flex-1 flex px-8">
+        <div className="flex flex-1 px-8">
           <div className="flex gap-4">
             <Button
               backgroundColor={"blue.500"}
@@ -139,7 +145,7 @@ const CodeSharing = () => {
 
             {codeSharingId && (
               <span
-                className="text-sm flex items-center"
+                className="flex items-center text-sm"
                 onClick={async () => {
                   await copy(location.href)
                   setCopied(true)
@@ -183,8 +189,8 @@ const CodeSharing = () => {
           height: "calc(100vh - 40px)",
         }}
       >
-        <div className="w-1/2 flex flex-col">
-          <div className="bg-gray-900 text-gray-100 flex gap-3 px-8 py-2">
+        <div className="flex flex-col w-1/2">
+          <div className="flex gap-3 px-8 py-2 text-gray-100 bg-gray-900">
             <span
               className={`${lang === "html" ? "text-blue-500" : ""} cursor-pointer`}
               onClick={setLang.bind(null, "html")}
@@ -198,8 +204,8 @@ const CodeSharing = () => {
               CSS
             </span>
             <span
-              className={`${lang === "js" ? "text-blue-500" : ""} cursor-pointer`}
-              onClick={() => setLang("js")}
+              className={`${lang === "javascript" ? "text-blue-500" : ""} cursor-pointer`}
+              onClick={() => setLang("javascript")}
             >
               JavaScript
             </span>
@@ -216,7 +222,7 @@ const CodeSharing = () => {
         </div>
         <div className="flex flex-col w-1/2">
           <iframe
-            className="w-full flex-1"
+            className="flex-1 w-full"
             ref={canvasRef}
             srcDoc={`
             <script>
@@ -229,14 +235,9 @@ const CodeSharing = () => {
                 }
               }
             </script>
-            ${codes.html}<style>${codes.css}</style><script>${codes.js}</script>`}
+            ${codes.html}<style>${codes.css}</style><script>${codes.javascript}</script>`}
           ></iframe>
-          <div
-            className="rounded-t-md
-          border-t-2
-          border-gray-100
-          bg-black text-gray-100"
-          >
+          <div className="text-gray-100 bg-black border-t-2 border-gray-100 rounded-t-md">
             <div className="flex justify-between items-center px-4 h-[40px]">
               <div>控制台</div>
               {consoleOpen ? (

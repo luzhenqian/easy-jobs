@@ -7,7 +7,7 @@ const CreateCodeSharing = z.object({
   code: z.object({
     html: z.string(),
     css: z.string(),
-    js: z.string(),
+    javascript: z.string(),
   }),
 })
 
