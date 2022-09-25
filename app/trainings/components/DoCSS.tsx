@@ -12,49 +12,32 @@ import createTrainingAnswer from "app/training-answers/mutations/createTrainingA
 import getTrainingAnswers from "app/training-answers/queries/getTrainingAnswers"
 import updateTrainingAnswer from "app/training-answers/mutations/updateTrainingAnswer"
 import getTrainings from "app/trainings/queries/getTrainings"
+import { useLocalStorage } from "app/core/hooks/useLocalStorage"
 
 export const DoCSS = () => {
   const [createTrainingAnswerMutation] = useMutation(createTrainingAnswer)
-  const [updateTrainingAnswerMutation] = useMutation(updateTrainingAnswer)
   const user = useCurrentUser()!
   const router = useRouter()
   const type = useParam("type", "string")
-  const [{ trainingAnswers, hasMore }] = useQuery(getTrainingAnswers, {
-    where: {
-      trainingId: router.query.trainingId as string,
-      userId: user.recordId,
-      isDraft: true,
-    },
-  })
-  const currentDraft = trainingAnswers[0]
 
   const trainingId = useParam("trainingId", "string")
   const [{ trainings }] = usePaginatedQuery(getTrainings, { where: { recordId: trainingId } })
   const training = trainings[0]!
-  const [layout, setLayout] = useState<{
+  const [layout, setLayout] = useLocalStorage<{
     html: boolean
     css: boolean
     current: boolean
     target: boolean
-  }>({
+  }>("training.layout", {
     html: true,
     css: true,
     current: true,
     target: true,
   })
-  const [code, setCode] = useState({
+  const [code, setCode] = useLocalStorage<{ html: string; css: string }>("training.code", {
     html: "",
     css: "",
   })
-
-  useEffect(() => {
-    if (currentDraft) {
-      setCode({
-        html: (currentDraft.code as any).html,
-        css: (currentDraft.code as any).css,
-      })
-    }
-  }, [currentDraft])
 
   const cssRef = useRef()
   const htmlRef = useRef()
@@ -65,57 +48,37 @@ export const DoCSS = () => {
     cssRef.current = editor
   }
 
+  let htmlTimer: any | null = null
   function handleHTMLEditorChange(value) {
-    setCode({ ...code, html: value })
+    if (htmlTimer !== null) {
+      clearTimeout(htmlTimer)
+    }
+    htmlTimer = setTimeout(() => {
+      setCode({ ...code, html: value })
+    }, 1_000)
   }
 
-  let timer: any | null = null
+  let cssTimer: any | null = null
   function handleCSSEditorChange(value) {
-    if (timer !== null) {
-      clearTimeout(timer)
+    if (cssTimer !== null) {
+      clearTimeout(cssTimer)
     }
-    timer = setTimeout(() => {
+    cssTimer = setTimeout(() => {
       setCode({ ...code, css: value })
     }, 1_000)
   }
 
   const [submitting, setSubmitting] = useState(false)
   async function submit() {
-    if (!currentDraft) {
-      return ""
-    }
     setSubmitting(true)
-    await updateTrainingAnswerMutation({
-      id: currentDraft.id,
-      code,
-      isDraft: false,
-    })
     await createTrainingAnswerMutation({
       userId: user.recordId,
       trainingId: router.query.trainingId as string,
-      code: {
-        html: "",
-        css: "",
-      },
+      code,
     })
+    setCode({ html: "", css: "" })
     setSubmitting(false)
   }
-  useEffect(() => {
-    if (currentDraft) {
-      void updateTrainingAnswerMutation({
-        id: currentDraft.id,
-        code,
-        isDraft: true,
-      })
-    } else {
-      if (!user || !user.recordId) return
-      void createTrainingAnswerMutation({
-        userId: user.recordId,
-        trainingId: router.query.trainingId as string,
-        code,
-      })
-    }
-  }, [code, router.query.trainingId, user])
 
   return (
     <Layout

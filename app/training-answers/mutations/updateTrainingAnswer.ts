@@ -53,8 +53,6 @@ export default resolver.pipe(
       ])
 
       let pass = false
-      console.log(originImageBinary, targetImageBinary)
-
       if (originImageBinary.equals(targetImageBinary)) {
         pass = true
       }
