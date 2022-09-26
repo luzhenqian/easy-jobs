@@ -9,14 +9,16 @@ const LoginPage: BlitzPage = () => {
 
   return (
     <Layout title="登录">
-      <Card>
-        <LoginForm
-          onSuccess={(_user) => {
-            const next = router.query.next ? decodeURIComponent(router.query.next as string) : "/"
-            return router.push(next)
-          }}
-        />
-      </Card>
+      <div className="w-[800px] m-auto flex justify-center">
+        <Card>
+          <LoginForm
+            onSuccess={(_user) => {
+              const next = router.query.next ? decodeURIComponent(router.query.next as string) : "/"
+              return router.push(next)
+            }}
+          />
+        </Card>
+      </div>
     </Layout>
   )
 }
