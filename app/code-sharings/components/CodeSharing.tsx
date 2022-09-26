@@ -4,7 +4,7 @@ import Head from "next/head"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import Layout from "app/core/layouts/Layout"
-import { Alert, AlertIcon, Button } from "@chakra-ui/react"
+import { Button, useToast } from "@chakra-ui/react"
 import Editor, { loader } from "@monaco-editor/react"
 import Loading from "app/core/components/Loading"
 import { useLocalStorage } from "app/core/hooks/useLocalStorage"
@@ -13,7 +13,6 @@ import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import { ArrowDown, ArrowUp, Link } from "app/core/components/Icons"
 import useCopyToClipboard from "app/core/hooks/useCopyToClipboard"
 import getCodeSharings from "../queries/getCodeSharings"
-import { offset, useFloating } from "@floating-ui/react-dom"
 
 loader.config({
   paths: {
@@ -61,7 +60,17 @@ const CodeSharing = () => {
 
   const router = useRouter()
   const [sharing, setSharing] = useState(false)
+  const toast = useToast()
   const shared = async () => {
+    if (!user) {
+      toast({
+        status: "warning",
+        title: "分享代码需要登录！",
+        duration: 2000,
+        position: "top",
+      })
+      return
+    }
     setSharing(true)
     const { recordId } = await createCodeSharingMutation({
       code: codes,
@@ -82,16 +91,9 @@ const CodeSharing = () => {
   codeSharingId && count === 0 && router.replace("/404")
 
   const [_, copy] = useCopyToClipboard()
-  const [copied, setCopied] = useState(false)
-
-  const { x, y, reference, floating, strategy } = useFloating({
-    placement: "top",
-    middleware: [offset(-60)],
-  })
 
   const [logs, setLogs] = useState<{ type: "log" | "error" | "info"; args: any }[]>([])
   useEffect(() => {
-    if (typeof window !== "undefined") reference(document.body)
     function onMessage(e) {
       if (((e.data.type as string) || "").includes("console")) {
         console.log("e", e.data)
@@ -148,10 +150,12 @@ const CodeSharing = () => {
                 className="flex items-center text-sm"
                 onClick={async () => {
                   await copy(location.href)
-                  setCopied(true)
-                  setTimeout(() => {
-                    setCopied(false)
-                  }, 15_00)
+                  toast({
+                    status: "success",
+                    title: "复制成功！",
+                    duration: 2000,
+                    position: "top",
+                  })
                 }}
               >
                 <Link className="w-8 h-8"></Link>
@@ -166,22 +170,6 @@ const CodeSharing = () => {
       <Head>
         <title>CodeSharing</title>
       </Head>
-
-      {copied && (
-        <Alert
-          status="success"
-          ref={floating}
-          style={{
-            position: strategy,
-            top: y ?? 0,
-            left: x ?? 0,
-            width: "auto",
-          }}
-        >
-          <AlertIcon />
-          复制成功！
-        </Alert>
-      )}
 
       <div
         className="flex "
