@@ -54,9 +54,6 @@ const CodeSharing = () => {
   const onChange = (value) => {
     setCodes((prev) => ({ ...prev, [lang]: value }))
   }
-  useEffect(() => {
-    if (editorRef.current) editorRef.current.setValue(codes[lang])
-  }, [lang])
 
   const router = useRouter()
   const [sharing, setSharing] = useState(false)
@@ -100,16 +97,22 @@ const CodeSharing = () => {
         setLogs((prev) => [...prev, e.data])
       }
     }
+
     window.addEventListener("message", onMessage)
 
     if (codeSharingId) setCodes(((codeSharings as unknown as any)[0] as any).code)
 
-    if (canvasRef.current)
-      canvasRef.current.srcdoc = `${codes.html}<style>${codes.css}</style><script>${codes.javascript}</script>`
+    if (canvasRef.current) {
+      canvasRef.current.srcdoc = `${preInsertScript}${codes.html}<style>${codes.css}</style><script>${codes.javascript}</script>`
+    }
     return () => {
       window.removeEventListener("message", onMessage)
     }
   }, [])
+
+  useEffect(() => {
+    if (editorRef.current) editorRef.current.setValue(codes[lang])
+  }, [lang])
 
   const [consoleOpen, setConsoleOpen] = useState(false)
   useEffect(() => {
@@ -213,16 +216,7 @@ const CodeSharing = () => {
             className="flex-1 w-full"
             ref={canvasRef}
             srcDoc={`
-            <script>
-              var fns = new Map()
-              for(let key in console) {
-                fns.set(key, console[key])
-                console[key] = (...args) => {
-                  window.parent.postMessage({ type: 'console.' + key, args }, "*")
-                  return fns.get(key)(...args)
-                }
-              }
-            </script>
+            ${preInsertScript}
             ${codes.html}<style>${codes.css}</style><script>${codes.javascript}</script>`}
           ></iframe>
           <div className="text-gray-100 bg-black border-t-2 border-gray-100 rounded-t-md">
@@ -250,5 +244,16 @@ const CodeSharing = () => {
     </Layout>
   )
 }
+
+const preInsertScript = `<script>
+var fns = new Map()
+for(let key in console) {
+  fns.set(key, console[key])
+  console[key] = (...args) => {
+    window.parent.postMessage({ type: 'console.' + key, args }, "*")
+    return fns.get(key)(...args)
+  }
+}
+</script>`
 
 export default CodeSharing
