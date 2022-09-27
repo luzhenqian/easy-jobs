@@ -7,6 +7,7 @@ import logout from "app/auth/mutations/logout"
 import { useMutation } from "@blitzjs/rpc"
 import { Routes } from "@blitzjs/next"
 import { Avatar, Button, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react"
+import Loading from "../components/Loading"
 
 const UserInfo = () => {
   const currentUser = useCurrentUser()
@@ -31,7 +32,7 @@ const UserInfo = () => {
     )
   } else {
     return (
-      <div className="gap-2 flex">
+      <div className="flex gap-2">
         <Link href={Routes.SignupPage()}>
           <a>
             <Button size="sm">注册</Button>
@@ -68,7 +69,7 @@ const Layout: BlitzLayout<{
 
         {actions}
 
-        <Suspense fallback="Loading...">
+        <Suspense fallback={<Loading className="m-0" />}>
           <UserInfo />
         </Suspense>
       </header>
