@@ -109,17 +109,6 @@ const ShowTrainingPage = () => {
 }
 
 ShowTrainingPage.authenticate = true
-ShowTrainingPage.getLayout = (page) => (
-  <Layout
-    headerStyle={{
-      height: "40px",
-      backgroundColor: "#1e1e1e",
-      color: "var(--chakra-colors-gray-100)",
-      borderBottom: "1px solid var(--chakra-colors-gray-400)",
-    }}
-  >
-    {page}
-  </Layout>
-)
+ShowTrainingPage.getLayout = (page) => <Layout>{page}</Layout>
 
 export default ShowTrainingPage

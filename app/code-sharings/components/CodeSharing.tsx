@@ -159,6 +159,7 @@ const CodeSharing = () => {
     <Layout
       headerStyle={{
         height: "40px",
+        maxWidth: "100%",
       }}
       actions={
         <div className="flex items-center justify-between flex-1 px-8">

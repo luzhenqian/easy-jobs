@@ -62,7 +62,7 @@ const Layout: BlitzLayout<{
       </Head>
 
       <header
-        className={"flex items-center justify-between h-[80px] px-16 font-medium text-2xl"}
+        className={`max-w-[1200px] m-auto flex items-center justify-between h-[80px] px-16 font-medium text-2xl`}
         style={headerStyle}
       >
         <Link href="/">easy jobs</Link>

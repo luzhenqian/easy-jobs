@@ -84,12 +84,13 @@ export const DoCSS = () => {
     <Layout
       headerStyle={{
         height: "40px",
+        maxWidth: "100%",
         backgroundColor: "#1e1e1e",
         color: "var(--chakra-colors-gray-100)",
         borderBottom: "1px solid var(--chakra-colors-gray-400)",
       }}
       actions={
-        <div className="flex-1 flex justify-end px-4">
+        <div className="flex justify-end flex-1 px-4">
           <div className="flex gap-4">
             <Button size={"xs"} bgColor="green.500">
               <Link href={`/trainings/${type}/${trainingId}/history`}>
@@ -118,11 +119,11 @@ export const DoCSS = () => {
         <div className="px-16 py-2">
           <Heading size={"sm"}>{training.name}</Heading>
         </div>
-        <div className="flex w-full flex-1 border-t border-gray-200">
+        <div className="flex flex-1 w-full border-t border-gray-200">
           {layout.html ? (
             <div className="flex flex-col flex-1 w-0">
               <div
-                className="py-2 px-8 text-lg border border-gray-200 text-blue-400"
+                className="px-8 py-2 text-lg text-blue-400 border border-gray-200"
                 onClick={() => setLayout({ ...layout, html: !layout.html })}
               >
                 html
@@ -151,12 +152,12 @@ export const DoCSS = () => {
           {layout.css ? (
             <div className="flex flex-col flex-1 w-0">
               <div
-                className="py-2 px-8 text-lg border border-gray-200 text-blue-400"
+                className="px-8 py-2 text-lg text-blue-400 border border-gray-200"
                 onClick={() => setLayout({ ...layout, css: !layout.css })}
               >
                 css
               </div>
-              <div className="flex-1  border border-gray-400">
+              <div className="flex-1 border border-gray-400">
                 <Monaco
                   language="css"
                   defaultValue={code.css}
@@ -180,13 +181,13 @@ export const DoCSS = () => {
           {layout.current ? (
             <div className="flex flex-col flex-1 w-0">
               <div
-                className="py-2 px-8 text-lg border border-gray-200 text-blue-400"
+                className="px-8 py-2 text-lg text-blue-400 border border-gray-200"
                 onClick={() => setLayout({ ...layout, current: !layout.current })}
               >
                 当前效果
               </div>
               <iframe
-                className="bg-white flex-1 border border-gray-400"
+                className="flex-1 bg-white border border-gray-400"
                 srcDoc={`${code.html} <style>${code.css}</style>`}
               ></iframe>
             </div>
@@ -203,13 +204,13 @@ export const DoCSS = () => {
           {layout.target ? (
             <div className="flex flex-col flex-1 w-0">
               <div
-                className="py-2 px-8 text-lg border border-gray-200        text-blue-400"
+                className="px-8 py-2 text-lg text-blue-400 border border-gray-200"
                 onClick={() => setLayout({ ...layout, target: !layout.target })}
               >
                 目标效果
               </div>
               <iframe
-                className="bg-white flex-1 border border-gray-400"
+                className="flex-1 bg-white border border-gray-400"
                 srcDoc={`${(training?.code as any).html} <style>${
                   (training?.code as any).css
                 }</style>`}
