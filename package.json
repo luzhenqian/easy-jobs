@@ -38,6 +38,7 @@
     "blitz": "2.0.0-beta.4",
     "chrome-aws-lambda": "10.1.0",
     "dayjs": "1.11.5",
+    "encodeurl": "1.0.2",
     "final-form": "4.20.7",
     "framer-motion": "7.3.6",
     "html-to-image": "1.10.8",

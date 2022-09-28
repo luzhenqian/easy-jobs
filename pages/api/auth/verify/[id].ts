@@ -1,7 +1,7 @@
 import { BlitzAPIHandler } from "@blitzjs/next"
-import login from "app/auth/mutations/login"
 import db from "db"
 import redis from "lib/redis"
+import encodeUrl from "encodeurl"
 
 const handler: BlitzAPIHandler<any> = async (req, res) => {
   console.log("req.query.id", req.query.id)
@@ -16,7 +16,7 @@ const handler: BlitzAPIHandler<any> = async (req, res) => {
       })
       if (result.status === 1) {
         res.statusCode = 301
-        res.setHeader("Location", "/auth/login?verified=true&msg=您的邮箱已经注册成功")
+        res.setHeader("Location", encodeUrl("/auth/login?verified=true&msg=您的邮箱已经注册成功"))
         res.end()
         return
       }
@@ -24,7 +24,7 @@ const handler: BlitzAPIHandler<any> = async (req, res) => {
   }
 
   res.statusCode = 301
-  res.setHeader("Location", "/auth/signup?verified=false&msg=邮箱认证失败，请重新注册")
+  res.setHeader("Location", encodeUrl("/auth/signup?verified=false&msg=邮箱认证失败，请重新注册"))
   res.end()
 }
 export default handler
