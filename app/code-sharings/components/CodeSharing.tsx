@@ -52,8 +52,14 @@ const CodeSharing = () => {
   const onLogMount = (editor) => {
     logEditorRef.current = editor
   }
-  const onChange = (value) => {
-    setCodes((prev) => ({ ...prev, [lang]: value }))
+  let codeUpdateTimer: any = null
+  const editorOnChange = (value) => {
+    if (codeUpdateTimer) {
+      clearTimeout(codeUpdateTimer)
+    }
+    codeUpdateTimer = setTimeout(() => {
+      setCodes((prev) => ({ ...prev, [lang]: value }))
+    }, 1000)
   }
 
   const router = useRouter()
@@ -268,7 +274,7 @@ const CodeSharing = () => {
               theme="vs-dark"
               language={lang}
               onMount={onMount}
-              onChange={onChange}
+              onChange={editorOnChange}
             ></Editor>
           </div>
         </div>
