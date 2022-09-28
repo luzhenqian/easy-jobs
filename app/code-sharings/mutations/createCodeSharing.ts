@@ -9,6 +9,7 @@ const CreateCodeSharing = z.object({
     css: z.string(),
     javascript: z.string(),
   }),
+  name: z.string(),
 })
 
 export default resolver.pipe(

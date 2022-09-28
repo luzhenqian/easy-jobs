@@ -4,15 +4,16 @@ import Head from "next/head"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import Layout from "app/core/layouts/Layout"
-import { Button, useToast } from "@chakra-ui/react"
+import { Button, Input, useToast } from "@chakra-ui/react"
 import Editor, { loader } from "@monaco-editor/react"
 import Loading from "app/core/components/Loading"
 import { useLocalStorage } from "app/core/hooks/useLocalStorage"
 import createCodeSharing from "app/code-sharings/mutations/createCodeSharing"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
-import { ArrowDown, ArrowUp, Link } from "app/core/components/Icons"
+import { ArrowDown, ArrowUp, Link as LinkIcon } from "app/core/components/Icons"
 import useCopyToClipboard from "app/core/hooks/useCopyToClipboard"
 import getCodeSharings from "../queries/getCodeSharings"
+import Link from "next/link"
 
 loader.config({
   paths: {
@@ -31,7 +32,7 @@ const CodeSharing = () => {
   const [createCodeSharingMutation] = useMutation(createCodeSharing)
 
   const user = useCurrentUser()
-  const codeSharingId = useParam("codeSharingId", "string")
+  const codeSharingId = useParam("codeSharingId", "string") || ""
 
   const [lang, setLang] = useState<Lang>("html")
   const [codes, setCodes] = useLocalStorage<Codes>("codes", {
@@ -58,7 +59,10 @@ const CodeSharing = () => {
   const router = useRouter()
   const [sharing, setSharing] = useState(false)
   const toast = useToast()
-  const shared = async () => {
+  const [shareNameInputting, setShareNameInputting] = useState(false)
+  const [shareName, setShareName] = useState("")
+  const handleShareNameChange = (event) => setShareName(event.target.value)
+  const sharedStepFirst = async () => {
     if (!user) {
       toast({
         status: "warning",
@@ -68,23 +72,44 @@ const CodeSharing = () => {
       })
       return
     }
+    setShareNameInputting(true)
+  }
+  const sharedStepSecond = async () => {
     setSharing(true)
     const { recordId } = await createCodeSharingMutation({
       code: codes,
       userId: user?.recordId || "",
+      name: shareName,
     })
     setSharing(false)
-    void router.push(Routes.CodeSharingHashPage({ codeSharingId: recordId }))
+    await router.push(Routes.CodeSharingHashPage({ codeSharingId: recordId }))
+    toast({
+      status: "success",
+      title: "分享成功！",
+      duration: 2000,
+      position: "top",
+    })
+    setShareNameInputting(false)
   }
 
   const [{ codeSharings, count }] = useQuery(
     getCodeSharings,
-    { where: { recordId: codeSharingId }, orderBy: { createdAt: "desc" }, take: 1, skip: 0 },
+    {
+      where: {
+        recordId: {
+          equals: codeSharingId,
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 1,
+      skip: 0,
+    },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
     }
   )
+
   codeSharingId && count === 0 && router.replace("/404")
 
   const [_, copy] = useCopyToClipboard()
@@ -93,7 +118,6 @@ const CodeSharing = () => {
   useEffect(() => {
     function onMessage(e) {
       if (((e.data.type as string) || "").includes("console")) {
-        console.log("e", e.data)
         setLogs((prev) => [...prev, e.data])
       }
     }
@@ -130,19 +154,43 @@ const CodeSharing = () => {
     }
     return () => timer && clearInterval(timer)
   }, [logs, consoleOpen])
+
   return (
     <Layout
       headerStyle={{
         height: "40px",
       }}
       actions={
-        <div className="flex flex-1 px-8">
-          <div className="flex gap-4">
+        <div className="flex items-center justify-between flex-1 px-8">
+          <div className="flex items-center justify-center gap-4">
+            {shareNameInputting ? (
+              <Input
+                size={"sm"}
+                width={"140px"}
+                maxLength={8}
+                placeholder="请输入分享的代码名称"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    void sharedStepSecond()
+                  }
+                }}
+                onChange={handleShareNameChange}
+                value={shareName}
+              ></Input>
+            ) : codeSharingId !== "" && codeSharings.length > 0 ? (
+              <span className="text-sm">{codeSharings[0]!.name}</span>
+            ) : null}
             <Button
               backgroundColor={"blue.500"}
               textColor={"white"}
-              onClick={shared}
+              onClick={() => {
+                if (shareNameInputting) {
+                  return void sharedStepSecond()
+                }
+                void sharedStepFirst()
+              }}
               isLoading={sharing}
+              disabled={shareNameInputting && shareName === ""}
               size={"sm"}
             >
               分享
@@ -161,12 +209,23 @@ const CodeSharing = () => {
                   })
                 }}
               >
-                <Link className="w-8 h-8"></Link>
+                <LinkIcon className="w-8 h-8"></LinkIcon>
                 <span> {codeSharingId}</span>
               </span>
             )}
           </div>
-          <div></div>
+          <div>
+            <Link href={Routes.MyCodeSharings()}>
+              <Button
+                backgroundColor={"blue.500"}
+                textColor={"white"}
+                isLoading={sharing}
+                size={"sm"}
+              >
+                我的分享
+              </Button>
+            </Link>
+          </div>
         </div>
       }
     >

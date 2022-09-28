@@ -105,4 +105,5 @@ model CodeSharing {
   code      Json
   userId    String   @default(uuid())
   isDraft   Boolean
+  name      String   @default("")
 }
