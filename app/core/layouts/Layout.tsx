@@ -15,7 +15,7 @@ const UserInfo = () => {
 
   if (currentUser) {
     return (
-      <Menu>
+      <Menu placement="bottom-end">
         <MenuButton>
           <Avatar size={"sm"} name={currentUser.name || currentUser.email}></Avatar>
         </MenuButton>
@@ -69,7 +69,7 @@ const Layout: BlitzLayout<{
 
         {actions}
 
-        <Suspense fallback={<Loading className="m-0" />}>
+        <Suspense fallback={<Loading className="m-0" noText />}>
           <UserInfo />
         </Suspense>
       </header>
