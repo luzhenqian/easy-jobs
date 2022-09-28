@@ -11,7 +11,5 @@ export async function sendMail(mailOptions: Mail.Options) {
     },
     secure: true,
   })
-  mailOptions.from = process.env.SMTP_USER
-
   return await transporter.sendMail(mailOptions)
 }
