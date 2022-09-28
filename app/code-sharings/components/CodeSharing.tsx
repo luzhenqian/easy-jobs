@@ -170,6 +170,7 @@ const CodeSharing = () => {
                 width={"140px"}
                 maxLength={8}
                 placeholder="请输入分享的代码名称"
+                autoFocus
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     void sharedStepSecond()
