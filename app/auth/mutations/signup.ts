@@ -5,6 +5,7 @@ import { Signup } from "../validations"
 import { nanoid } from "nanoid"
 import redis from "lib/redis"
 import { sendMail } from "lib/mail"
+import Mail from "nodemailer/lib/mailer"
 
 export default resolver.pipe(resolver.zod(Signup), async ({ email, password }, ctx) => {
   // 先查库里有没有这个用户
@@ -48,7 +49,11 @@ export default resolver.pipe(resolver.zod(Signup), async ({ email, password }, c
 })
 
 async function sendVerifyMail(email: string, verifyId: string) {
-  const mailData = {
+  const mailData: Mail.Options = {
+    from: {
+      name: "EasyJobs",
+      address: process.env.SMTP_USER!,
+    },
     to: email,
     subject: "EasyJobs 邮箱验证",
     html: `

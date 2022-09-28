@@ -33,7 +33,17 @@ const SignupPage: BlitzPage = () => {
     <Layout title="注册">
       <div className="w-[800px] m-auto flex justify-center">
         <Card>
-          <SignupForm onSuccess={() => router.push(Routes.Home())} />
+          <SignupForm
+            onSuccess={async () => {
+              await router.push(Routes.Home())
+              toast({
+                title: "激活邮件已发送，请前往邮箱激活",
+                status: "success",
+                duration: 2000,
+                position: "top",
+              })
+            }}
+          />
         </Card>
       </div>
     </Layout>
