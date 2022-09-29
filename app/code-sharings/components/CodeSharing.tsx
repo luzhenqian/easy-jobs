@@ -64,8 +64,10 @@ const CodeSharing = () => {
   }
 
   const runJS = () => {
-    if (canvasRef.current)
+    if (canvasRef.current) {
+      setLogs([])
       canvasRef.current.srcdoc = `${preInsertScript}${codes.html}<style>${codes.css}</style><script>${codes.javascript}</script>`
+    }
   }
 
   const router = useRouter()
@@ -125,7 +127,14 @@ const CodeSharing = () => {
   codeSharingId && count === 0 && router.replace("/404")
 
   const [_, copy] = useCopyToClipboard()
-
+  const makeDoc = () => {
+    return `
+    ${preInsertScript}
+    ${codes.html}<style>${codes.css}</style><script>((autoRunJS)=>{
+      if(!autoRunJS) return
+      ${codes.javascript}
+    })(${autoRunJS})</script>`
+  }
   const [logs, setLogs] = useState<{ type: "log" | "error" | "info"; args: any }[]>([])
   useEffect(() => {
     function onMessage(e) {
@@ -139,7 +148,8 @@ const CodeSharing = () => {
     if (codeSharingId) setCodes(((codeSharings as unknown as any)[0] as any).code)
 
     if (canvasRef.current) {
-      canvasRef.current.srcdoc = `${preInsertScript}${codes.html}<style>${codes.css}</style><script>${codes.javascript}</script>`
+      setLogs([])
+      canvasRef.current.srcdoc = makeDoc()
     }
     return () => {
       window.removeEventListener("message", onMessage)
@@ -322,16 +332,7 @@ const CodeSharing = () => {
           </div>
         </div>
         <div className="flex flex-col w-1/2">
-          <iframe
-            className="flex-1 w-full"
-            ref={canvasRef}
-            srcDoc={`
-            ${preInsertScript}
-            ${codes.html}<style>${codes.css}</style><script>((autoRunJS)=>{
-              if(!autoRunJS) return
-              ${codes.javascript}
-            })(${autoRunJS})</script>`}
-          ></iframe>
+          <iframe className="flex-1 w-full" ref={canvasRef} srcDoc={makeDoc()}></iframe>
           <div className="text-gray-100 bg-black border-t-2 border-gray-100 rounded-t-md">
             <div className="flex justify-between items-center px-4 h-[40px]">
               <div>控制台</div>
