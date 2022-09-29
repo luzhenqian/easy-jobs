@@ -27,7 +27,7 @@ export const LoginForm = (props: LoginFormProps) => {
             props.onSuccess?.(user)
           } catch (error: any) {
             if (error instanceof AuthenticationError) {
-              return { [FORM_ERROR]: "Sorry, those credentials are invalid" }
+              return { [FORM_ERROR]: error.message || "Sorry, those credentials are invalid" }
             } else {
               return {
                 [FORM_ERROR]:

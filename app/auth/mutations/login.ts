@@ -10,6 +10,8 @@ export const authenticateUser = async (rawEmail: string, rawPassword: string) =>
   const user = await db.user.findFirst({ where: { email } })
   if (!user) throw new AuthenticationError()
 
+  if (user.status === 0) throw new AuthenticationError("账号未激活，请先激活账号")
+
   const result = await SecurePassword.verify(user.hashedPassword, password)
 
   if (result === SecurePassword.VALID_NEEDS_REHASH) {
