@@ -241,18 +241,20 @@ const CodeSharing = () => {
               </span>
             )}
           </div>
-          <div>
-            <Link href={Routes.MyCodeSharings()}>
-              <Button
-                backgroundColor={"blue.500"}
-                textColor={"white"}
-                isLoading={sharing}
-                size={"sm"}
-              >
-                我的分享
-              </Button>
-            </Link>
-          </div>
+          {user && (
+            <div>
+              <Link href={Routes.MyCodeSharings()}>
+                <Button
+                  backgroundColor={"blue.500"}
+                  textColor={"white"}
+                  isLoading={sharing}
+                  size={"sm"}
+                >
+                  我的分享
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       }
     >
