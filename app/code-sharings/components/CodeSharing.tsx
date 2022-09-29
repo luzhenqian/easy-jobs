@@ -4,7 +4,7 @@ import Head from "next/head"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import Layout from "app/core/layouts/Layout"
-import { Button, Input, useToast } from "@chakra-ui/react"
+import { Button, Checkbox, Input, useToast } from "@chakra-ui/react"
 import Editor, { loader } from "@monaco-editor/react"
 import Loading from "app/core/components/Loading"
 import { useLocalStorage } from "app/core/hooks/useLocalStorage"
@@ -35,6 +35,7 @@ const CodeSharing = () => {
   const codeSharingId = useParam("codeSharingId", "string") || ""
 
   const [lang, setLang] = useState<Lang>("html")
+  const [autoRunJS, setAutoRunJS] = useState(true)
   const [codes, setCodes] = useLocalStorage<Codes>("codes", {
     html: "",
     css: "",
@@ -60,6 +61,11 @@ const CodeSharing = () => {
     codeUpdateTimer = setTimeout(() => {
       setCodes((prev) => ({ ...prev, [lang]: value }))
     }, 1000)
+  }
+
+  const runJS = () => {
+    if (canvasRef.current)
+      canvasRef.current.srcdoc = `${preInsertScript}${codes.html}<style>${codes.css}</style><script>${codes.javascript}</script>`
   }
 
   const router = useRouter()
@@ -261,25 +267,41 @@ const CodeSharing = () => {
         }}
       >
         <div className="flex flex-col w-1/2">
-          <div className="flex gap-3 px-8 py-2 text-gray-100 bg-gray-900">
-            <span
-              className={`${lang === "html" ? "text-blue-500" : ""} cursor-pointer`}
-              onClick={setLang.bind(null, "html")}
-            >
-              HTML
-            </span>
-            <span
-              className={`${lang === "css" ? "text-blue-500" : ""} cursor-pointer`}
-              onClick={setLang.bind(null, "css")}
-            >
-              CSS
-            </span>
-            <span
-              className={`${lang === "javascript" ? "text-blue-500" : ""} cursor-pointer`}
-              onClick={() => setLang("javascript")}
-            >
-              JavaScript
-            </span>
+          <div className="flex justify-between px-8 py-2 text-gray-100 bg-gray-900">
+            <div className="flex gap-3">
+              <span
+                className={`${lang === "html" ? "text-blue-500" : ""} cursor-pointer`}
+                onClick={setLang.bind(null, "html")}
+              >
+                HTML
+              </span>
+              <span
+                className={`${lang === "css" ? "text-blue-500" : ""} cursor-pointer`}
+                onClick={setLang.bind(null, "css")}
+              >
+                CSS
+              </span>
+              <span
+                className={`${lang === "javascript" ? "text-blue-500" : ""} cursor-pointer`}
+                onClick={() => setLang("javascript")}
+              >
+                JavaScript
+              </span>
+            </div>
+            <div className="flex gap-3">
+              <Button size={"xs"} backgroundColor={"blue.500"} onClick={runJS}>
+                Run JS
+              </Button>
+              <Checkbox
+                checked={autoRunJS}
+                value="cc"
+                onChange={(e) => {
+                  setAutoRunJS(e.target.checked)
+                }}
+              >
+                AutoRunJS
+              </Checkbox>
+            </div>
           </div>
           <div className="flex-1">
             <Editor
@@ -297,7 +319,10 @@ const CodeSharing = () => {
             ref={canvasRef}
             srcDoc={`
             ${preInsertScript}
-            ${codes.html}<style>${codes.css}</style><script>${codes.javascript}</script>`}
+            ${codes.html}<style>${codes.css}</style><script>((autoRunJS)=>{
+              if(!autoRunJS) return
+              ${codes.javascript}
+            })(${autoRunJS})</script>`}
           ></iframe>
           <div className="text-gray-100 bg-black border-t-2 border-gray-100 rounded-t-md">
             <div className="flex justify-between items-center px-4 h-[40px]">
