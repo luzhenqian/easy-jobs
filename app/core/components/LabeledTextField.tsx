@@ -47,10 +47,10 @@ export const LabeledTextField = forwardRef<
 
         {type === "textarea" ? (
           /* @ts-ignore */
-          <Textarea {...input} disabled={submitting} {...props} ref={ref as any} />
+          <Textarea {...input} disabled={submitting} {...props} ref={ref as any} type={type} />
         ) : (
           /* @ts-ignore */
-          <Input {...input} disabled={submitting} {...props} ref={ref as any} />
+          <Input {...input} disabled={submitting} {...props} ref={ref as any} type={type} />
         )}
       </label>
 
