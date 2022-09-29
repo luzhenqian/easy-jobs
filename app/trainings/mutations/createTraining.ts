@@ -11,6 +11,7 @@ const CreateTraining = z.object({
   type: z.string(),
   jsFramework: z.object({}),
   cssFramework: z.object({}),
+  order: z.number(),
 })
 
 export default resolver.pipe(resolver.zod(CreateTraining), resolver.authorize(), async (input) => {
