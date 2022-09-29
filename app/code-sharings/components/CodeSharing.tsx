@@ -153,7 +153,20 @@ const CodeSharing = () => {
     if (consoleOpen === true) {
       timer = setInterval(() => {
         if (logEditorRef.current) {
-          logEditorRef.current.setValue(logs.map((log) => log.args).join("\n"))
+          logEditorRef.current.setValue(
+            logs
+              .map((log) => {
+                return log.args
+                  .map((arg) => {
+                    if (typeof arg === "object") {
+                      return JSON.stringify(arg)
+                    }
+                    return arg
+                  })
+                  .join(" ")
+              })
+              .join("\n")
+          )
           timer && clearInterval(timer)
         }
       }, 5_0)
@@ -302,7 +315,12 @@ const CodeSharing = () => {
             {consoleOpen ? (
               <div className="border-t border-gray-400 h-[300px]">
                 <div></div>
-                <Editor theme="vs-dark" onMount={onLogMount} options={{ readOnly: true }}></Editor>
+                <Editor
+                  language="json"
+                  theme="vs-dark"
+                  onMount={onLogMount}
+                  options={{ readOnly: true }}
+                ></Editor>
               </div>
             ) : null}
           </div>
@@ -313,10 +331,30 @@ const CodeSharing = () => {
 }
 
 const preInsertScript = `<script>
+function funcToString(args) {
+  for(let i = 0; i < args.length; i++) {
+    const arg = args[i]
+    if(typeof arg === 'function') {
+      args[i] = arg.toString()
+    } else if(Array.isArray(arg)) {
+      args[i] = funcToString(arg)
+    } else if(typeof arg === 'object') {
+      Object.keys(arg).forEach((key) => {
+        if(typeof arg[key] === 'function') {
+          arg[key] = arg[key].toString()
+        } else if(Array.isArray(arg[key])) {
+          arg[key] = funcToString(arg[key])
+        }
+      })
+    }
+  }
+}
+
 var fns = new Map()
 for(let key in console) {
   fns.set(key, console[key])
   console[key] = (...args) => {
+    funcToString(args)
     window.parent.postMessage({ type: 'console.' + key, args }, "*")
     return fns.get(key)(...args)
   }
