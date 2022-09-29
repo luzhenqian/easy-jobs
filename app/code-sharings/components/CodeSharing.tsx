@@ -289,9 +289,15 @@ const CodeSharing = () => {
               </span>
             </div>
             <div className="flex gap-3">
-              <Button size={"xs"} backgroundColor={"blue.500"} onClick={runJS}>
-                Run JS
+              <Button
+                size={"xs"}
+                backgroundColor={"blue.500"}
+                onClick={runJS}
+                _hover={{ backgroundColor: "blue.600" }}
+              >
+                运行 JS
               </Button>
+
               <Checkbox
                 checked={autoRunJS}
                 value="cc"
@@ -299,7 +305,7 @@ const CodeSharing = () => {
                   setAutoRunJS(e.target.checked)
                 }}
               >
-                AutoRunJS
+                自动运行 JS
               </Checkbox>
             </div>
           </div>
@@ -328,11 +334,23 @@ const CodeSharing = () => {
             <div className="flex justify-between items-center px-4 h-[40px]">
               <div>控制台</div>
               {consoleOpen ? (
-                <ArrowDown
-                  size={"lg"}
-                  className="fill-white"
-                  onClick={() => setConsoleOpen(false)}
-                />
+                <div className="flex items-center justify-center">
+                  <Button
+                    size={"xs"}
+                    backgroundColor={"blue.500"}
+                    onClick={() => {
+                      setLogs([])
+                    }}
+                    _hover={{ backgroundColor: "blue.600" }}
+                  >
+                    清除日志
+                  </Button>
+                  <ArrowDown
+                    size={"lg"}
+                    className="fill-white"
+                    onClick={() => setConsoleOpen(false)}
+                  />
+                </div>
               ) : (
                 <ArrowUp size={"lg"} className="fill-white" onClick={() => setConsoleOpen(true)} />
               )}
