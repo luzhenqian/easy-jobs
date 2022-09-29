@@ -35,7 +35,7 @@ const CodeSharing = () => {
   const codeSharingId = useParam("codeSharingId", "string") || ""
 
   const [lang, setLang] = useState<Lang>("html")
-  const [autoRunJS, setAutoRunJS] = useState(true)
+  const [autoRunJS, setAutoRunJS] = useState(false)
   const [codes, setCodes] = useLocalStorage<Codes>("codes", {
     html: "",
     css: "",
