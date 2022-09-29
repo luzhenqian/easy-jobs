@@ -83,6 +83,7 @@ model Training {
   cssFramework Json
   code         Json
   name         String
+  order        Int
 }
 
 model TrainingAnswer {

@@ -55,7 +55,7 @@ export const TrainingsList = () => {
         <Tbody>
           {trainings.map((training) => (
             <Tr className="cursor-pointer" key={training.id}>
-              <Td>{training.id}</Td>
+              <Td>{training.order}</Td>
               <Td>
                 <a
                   href={
