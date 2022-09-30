@@ -413,6 +413,8 @@ function funcToString(args) {
           arg[key] = funcToString(arg[key])
         }
       })
+    } else {
+      return args;
     }
   }
 }
