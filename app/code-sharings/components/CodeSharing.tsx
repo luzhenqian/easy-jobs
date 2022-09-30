@@ -276,7 +276,11 @@ const CodeSharing = () => {
       }
     >
       <Head>
-        <title>CodeSharing</title>
+        {codeSharings[0]?.name ? (
+          <title>CodeSharing - {codeSharings[0].name}</title>
+        ) : (
+          <title>CodeSharing </title>
+        )}
       </Head>
 
       <div
