@@ -34,7 +34,7 @@ const CodeSharing = () => {
   const user = useCurrentUser()
   const codeSharingId = useParam("codeSharingId", "string") || ""
 
-  const [lang, setLang] = useState<Lang>("html")
+  const [lang, setLang] = useLocalStorage<Lang>("editor.layout.openLanguage", "html")
   const [autoRunJS, setAutoRunJS] = useState(false)
   const [codes, setCodes] = useLocalStorage<Codes>("codes", {
     html: "",
@@ -197,6 +197,9 @@ const CodeSharing = () => {
     }
   }
 
+  const [editorWidth, setEditorWidth] = useLocalStorage("editor.layout.editorWidth", 0)
+  const [moving, setMoving] = useState(false)
+
   return (
     <Layout
       headerStyle={{
@@ -289,8 +292,13 @@ const CodeSharing = () => {
           height: "calc(100vh - 40px)",
         }}
       >
-        <div className="flex flex-col w-1/2">
-          <div className="flex justify-between px-8 py-2 text-gray-100 bg-gray-900">
+        <div
+          className="flex flex-col min-w-[400px]"
+          style={{
+            width: editorWidth ? editorWidth + "px" : "50%",
+          }}
+        >
+          <div className="flex justify-between px-8 py-2 text-gray-100 bg-gray-900 flex-wrap gap-2">
             <div className="flex gap-3">
               <span
                 className={`${lang === "html" ? "text-blue-500" : ""} cursor-pointer`}
@@ -355,7 +363,15 @@ const CodeSharing = () => {
             ></Editor>
           </div>
         </div>
-        <div className="flex flex-col w-1/2">
+
+        <span
+          className="inline-block right-0 top-0 bottom-0 cursor-ew-resize w-[4px] z-10 bg-gray-400"
+          onMouseDown={() => {
+            setMoving(true)
+          }}
+        ></span>
+
+        <div className="flex flex-col flex-1 min-w-[280px]">
           <iframe className="flex-1 w-full" ref={canvasRef} srcDoc={makeDoc()}></iframe>
           <div className="text-gray-100 bg-black border-t-2 border-gray-100 rounded-t-md">
             <div className="flex justify-between items-center px-4 h-[40px]">
@@ -396,6 +412,19 @@ const CodeSharing = () => {
           </div>
         </div>
       </div>
+
+      {moving && (
+        <div
+          className="fixed top-0 left-0 right-0 bottom-0 z-50 cursor-col-resize"
+          onMouseMove={(e) => {
+            console.log(e.pageX)
+            setEditorWidth(e.pageX)
+          }}
+          onMouseUp={() => {
+            setMoving(false)
+          }}
+        ></div>
+      )}
     </Layout>
   )
 }
