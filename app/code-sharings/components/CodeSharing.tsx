@@ -198,7 +198,10 @@ const CodeSharing = () => {
   }
 
   const [editorWidth, setEditorWidth] = useLocalStorage("editor.layout.editorWidth", 0)
-  const [moving, setMoving] = useState(false)
+  const [consoleHeight, setConsoleHeight] = useLocalStorage("editor.layout.consoleHeight", 300)
+
+  const [editorMoving, setEditorMoving] = useState(false)
+  const [consoleMoving, setConsoleMoving] = useState(false)
 
   return (
     <Layout
@@ -365,16 +368,29 @@ const CodeSharing = () => {
         </div>
 
         <span
-          className="inline-block right-0 top-0 bottom-0 cursor-ew-resize w-[4px] z-10 bg-gray-400"
+          className="inline-block cursor-ew-resize w-[4px] z-10 bg-gray-400"
           onMouseDown={() => {
-            setMoving(true)
+            setEditorMoving(true)
           }}
         ></span>
 
         <div className="flex flex-col flex-1 min-w-[280px]">
           <iframe className="flex-1 w-full" ref={canvasRef} srcDoc={makeDoc()}></iframe>
-          <div className="text-gray-100 bg-black border-t-2 border-gray-100 rounded-t-md">
-            <div className="flex justify-between items-center px-4 h-[40px]">
+
+          {consoleOpen && (
+            <span
+              className="transform translate-y-[4px] z-10 inline-block cursor-ns-resize h-[4px] bg-gray-400"
+              onMouseDown={() => {
+                setConsoleMoving(true)
+              }}
+            ></span>
+          )}
+
+          <div className="text-gray-100 bg-black rounded-t-lg">
+            <div
+              className="flex justify-between items-center px-4 h-[40px]"
+              onClick={() => setConsoleOpen(!consoleOpen)}
+            >
               <div>控制台</div>
               {consoleOpen ? (
                 <div className="flex items-center justify-center">
@@ -388,18 +404,19 @@ const CodeSharing = () => {
                   >
                     清除日志
                   </Button>
-                  <ArrowDown
-                    size={"lg"}
-                    className="fill-white"
-                    onClick={() => setConsoleOpen(false)}
-                  />
+                  <ArrowDown size={"lg"} className="fill-white" />
                 </div>
               ) : (
-                <ArrowUp size={"lg"} className="fill-white" onClick={() => setConsoleOpen(true)} />
+                <ArrowUp size={"lg"} className="fill-white" />
               )}
             </div>
             {consoleOpen ? (
-              <div className="border-t border-gray-400 h-[300px]">
+              <div
+                className="border-t border-gray-400 max-h-[70vh]"
+                style={{
+                  height: consoleHeight + "px",
+                }}
+              >
                 <div></div>
                 <Editor
                   language="json"
@@ -413,15 +430,18 @@ const CodeSharing = () => {
         </div>
       </div>
 
-      {moving && (
+      {(editorMoving || consoleMoving) && (
         <div
-          className="fixed top-0 left-0 right-0 bottom-0 z-50 cursor-col-resize"
+          className={`fixed top-0 left-0 right-0 bottom-0 z-50 ${
+            editorMoving && "cursor-col-resize"
+          } ${consoleMoving && "cursor-row-resize"}`}
           onMouseMove={(e) => {
-            console.log(e.pageX)
-            setEditorWidth(e.pageX)
+            editorMoving && setEditorWidth(e.pageX)
+            consoleMoving && setConsoleHeight(document.body.clientHeight - e.pageY - 40)
           }}
           onMouseUp={() => {
-            setMoving(false)
+            editorMoving && setEditorMoving(false)
+            consoleMoving && setConsoleMoving(false)
           }}
         ></div>
       )}
