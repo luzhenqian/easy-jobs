@@ -17,7 +17,7 @@ import Link from "next/link"
 
 loader.config({
   paths: {
-    vs: "/libs/monaco-editor@0.33.0",
+    vs: "/libs/vs",
   },
 })
 
@@ -190,6 +190,14 @@ const CodeSharing = () => {
     return () => timer && clearInterval(timer)
   }, [logs, consoleOpen])
 
+  const format = () => {
+    console.log(editorRef.current.trigger, "editorRef.current")
+
+    if (editorRef.current) {
+      editorRef.current.trigger("anyString", "editor.action.formatDocument")
+    }
+  }
+
   return (
     <Layout
       headerStyle={{
@@ -304,10 +312,18 @@ const CodeSharing = () => {
               <Button
                 size={"xs"}
                 backgroundColor={"blue.500"}
-                onClick={runJS}
                 _hover={{ backgroundColor: "blue.600" }}
+                onClick={runJS}
               >
                 运行 JS
+              </Button>
+              <Button
+                size={"xs"}
+                backgroundColor={"blue.500"}
+                _hover={{ backgroundColor: "blue.600" }}
+                onClick={format}
+              >
+                格式化代码
               </Button>
 
               <Checkbox
@@ -326,8 +342,13 @@ const CodeSharing = () => {
               loading={<Loading />}
               theme="vs-dark"
               language={lang}
+              defaultLanguage={lang}
               onMount={onMount}
               onChange={editorOnChange}
+              options={{
+                fontSize: 18,
+                tabSize: 2,
+              }}
             ></Editor>
           </div>
         </div>
