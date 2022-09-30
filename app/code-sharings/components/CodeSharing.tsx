@@ -403,18 +403,12 @@ function funcToString(args) {
     const arg = args[i]
     if(typeof arg === 'function') {
       args[i] = arg.toString()
-    } else if(Array.isArray(arg)) {
-      args[i] = funcToString(arg)
     } else if(typeof arg === 'object') {
       Object.keys(arg).forEach((key) => {
         if(typeof arg[key] === 'function') {
           arg[key] = arg[key].toString()
-        } else if(Array.isArray(arg[key])) {
-          arg[key] = funcToString(arg[key])
         }
       })
-    } else {
-      return args;
     }
   }
 }
