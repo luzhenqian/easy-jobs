@@ -90,7 +90,7 @@ const CodeSharing = () => {
   }
   const sharedStepSecond = async () => {
     setSharing(true)
-    const { recordId } = await createCodeSharingMutation({
+    const { recordId, name } = await createCodeSharingMutation({
       code: codes,
       userId: user?.recordId || "",
       name: shareName,
@@ -100,9 +100,10 @@ const CodeSharing = () => {
     toast({
       status: "success",
       title: "分享成功！",
-      duration: 2000,
+      duration: 1000,
       position: "top",
     })
+    void copy(location.href)
     setShareNameInputting(false)
   }
 
@@ -191,8 +192,6 @@ const CodeSharing = () => {
   }, [logs, consoleOpen])
 
   const format = () => {
-    console.log(editorRef.current.trigger, "editorRef.current")
-
     if (editorRef.current) {
       editorRef.current.trigger("anyString", "editor.action.formatDocument")
     }
@@ -399,18 +398,14 @@ const CodeSharing = () => {
 
 const preInsertScript = `<script>
 function funcToString(args) {
-  for(let i = 0; i < args.length; i++) {
-    const arg = args[i]
-    if(typeof arg === 'function') {
-      args[i] = arg.toString()
-    } else if(typeof arg === 'object') {
-      Object.keys(arg).forEach((key) => {
-        if(typeof arg[key] === 'function') {
-          arg[key] = arg[key].toString()
-        }
-      })
+  Object.keys(args).forEach((key) => {
+    const arg = args[key]
+    if (typeof arg === "function") {
+      args[key] = arg.toString()
+    } else if (typeof arg === "object") {
+      funcToString(arg)
     }
-  }
+  })
 }
 
 var fns = new Map()
