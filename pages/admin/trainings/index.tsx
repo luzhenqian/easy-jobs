@@ -93,7 +93,19 @@ export const TrainingsList = () => {
   )
 }
 
-const TrainingsCatePage = () => {
+const Create = () => {
+  const currentUser = useCurrentUser()
+  if (currentUser?.role !== "ADMIN") return null
+  return (
+    <Button bgColor={"blue.500"} _hover={{ background: "blue.300" }} className="text-xl">
+      <Link href={Routes.NewTrainingPage()}>
+        <a>创建练习题</a>
+      </Link>
+    </Button>
+  )
+}
+
+const AdminTrainingsPage = () => {
   return (
     <Layout>
       <Head>
@@ -102,6 +114,7 @@ const TrainingsCatePage = () => {
 
       <div className="flex flex-col  gap-10 text-3xl w-[800px] m-auto">
         <Suspense fallback={<Loading />}>
+          <Create />
           <TrainingsList />
         </Suspense>
       </div>
@@ -109,4 +122,4 @@ const TrainingsCatePage = () => {
   )
 }
 
-export default TrainingsCatePage
+export default AdminTrainingsPage

@@ -4,8 +4,6 @@ import redis from "lib/redis"
 import encodeUrl from "encodeurl"
 
 const handler: BlitzAPIHandler<any> = async (req, res) => {
-  console.log("req.query.id", req.query.id)
-
   const id = await redis.getdel(req.query.id as string)
   if (id) {
     const user = await db.user.findFirst({ where: { recordId: id } })

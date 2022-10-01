@@ -4,10 +4,24 @@ import { BlitzLayout } from "@blitzjs/next"
 import Link from "next/link"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import logout from "app/auth/mutations/logout"
-import { useMutation } from "@blitzjs/rpc"
+import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import { Routes } from "@blitzjs/next"
-import { Avatar, Button, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react"
-import Loading from "../components/Loading"
+import {
+  Avatar,
+  Button,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Input,
+  InputGroup,
+  InputRightAddon,
+  InputRightElement,
+  useQuery,
+} from "@chakra-ui/react"
+import Loading from "app/core/components/Loading"
+import { Search as SearchIcon } from "app/core/components/Icons"
+import { useRouter } from "next/router"
 
 const UserInfo = () => {
   const currentUser = useCurrentUser()
@@ -15,20 +29,29 @@ const UserInfo = () => {
 
   if (currentUser) {
     return (
-      <Menu placement="bottom-end">
-        <MenuButton>
-          <Avatar size={"sm"} name={currentUser.name || currentUser.email}></Avatar>
-        </MenuButton>
-        <MenuList className="text-sm">
-          <MenuItem
-            onClick={async () => {
-              await logoutMutation()
-            }}
-          >
-            退出登录
-          </MenuItem>
-        </MenuList>
-      </Menu>
+      <div className="flex gap-4">
+        {currentUser.role === "ADMIN" && (
+          <Link href={Routes.AdminPage()}>
+            <a>
+              <Button size="sm">管理中心</Button>
+            </a>
+          </Link>
+        )}
+        <Menu placement="bottom-end">
+          <MenuButton>
+            <Avatar size={"sm"} name={currentUser.name || currentUser.email}></Avatar>
+          </MenuButton>
+          <MenuList className="text-sm">
+            <MenuItem
+              onClick={async () => {
+                await logoutMutation()
+              }}
+            >
+              退出登录
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      </div>
     )
   } else {
     return (
@@ -46,6 +69,31 @@ const UserInfo = () => {
       </div>
     )
   }
+}
+
+const Search = () => {
+  const router = useRouter()
+  return (
+    <InputGroup width={400} size={"md"}>
+      <Input
+        defaultValue={router.query.keywords}
+        bgColor={"gray.100"}
+        placeholder={"搜索"}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            void router.push(
+              Routes.SearchPage({
+                keywords: (e.target as HTMLInputElement)!.value,
+              })
+            )
+          }
+        }}
+      />
+      <InputRightElement>
+        <SearchIcon size="lg" />
+      </InputRightElement>
+    </InputGroup>
+  )
 }
 
 const Layout: BlitzLayout<{
@@ -67,7 +115,7 @@ const Layout: BlitzLayout<{
       >
         <Link href="/">easy jobs</Link>
 
-        {actions}
+        {actions || <Search />}
 
         <Suspense fallback={<Loading className="m-0" noText />}>
           <UserInfo />
