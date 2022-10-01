@@ -161,7 +161,7 @@ const CodeSharing = () => {
     if (editorRef.current) editorRef.current.setValue(codes[lang])
   }, [lang])
 
-  const [consoleOpen, setConsoleOpen] = useState(false)
+  const [consoleOpen, setConsoleOpen] = useLocalStorage("editor.layout.consoleOpen", false)
   useEffect(() => {
     setLogs([])
   }, [codes])
@@ -412,7 +412,7 @@ const CodeSharing = () => {
             </div>
             {consoleOpen ? (
               <div
-                className="border-t border-gray-400 max-h-[70vh]"
+                className="border-t border-gray-400 max-h-[70vh] min-h-[100px]"
                 style={{
                   height: consoleHeight + "px",
                 }}
