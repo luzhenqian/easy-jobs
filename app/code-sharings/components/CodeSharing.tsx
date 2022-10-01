@@ -296,11 +296,20 @@ const CodeSharing = () => {
         }}
       >
         <div
-          className="flex flex-col min-w-[400px]"
+          className="flex flex-col min-w-[400px] relative"
           style={{
             width: editorWidth ? editorWidth + "px" : "50%",
           }}
         >
+          <span
+            className={`inline-block cursor-ew-resize w-[6px] z-10 bg-blue-500 opacity-0 hover:opacity-100 absolute right-0 top-0 bottom-0
+            ${editorMoving && "opacity-100"}
+            translate-x-[3px]`}
+            onMouseDown={() => {
+              setEditorMoving(true)
+            }}
+          ></span>
+
           <div className="flex justify-between px-8 py-2 text-gray-100 bg-gray-900 flex-wrap gap-2">
             <div className="flex gap-3">
               <span
@@ -367,30 +376,25 @@ const CodeSharing = () => {
           </div>
         </div>
 
-        <span
-          className="inline-block cursor-ew-resize w-[4px] z-10 bg-gray-400"
-          onMouseDown={() => {
-            setEditorMoving(true)
-          }}
-        ></span>
-
         <div className="flex flex-col flex-1 min-w-[280px]">
           <iframe className="flex-1 w-full" ref={canvasRef} srcDoc={makeDoc()}></iframe>
 
-          {consoleOpen && (
-            <span
-              className="transform translate-y-[4px] z-10 inline-block cursor-ns-resize h-[4px] bg-gray-400"
-              onMouseDown={() => {
-                setConsoleMoving(true)
-              }}
-            ></span>
-          )}
-
           <div className="text-gray-100 bg-black rounded-t-lg">
             <div
-              className="flex justify-between items-center px-4 h-[40px]"
+              className="flex justify-between items-center px-4 h-[40px] relative"
               onClick={() => setConsoleOpen(!consoleOpen)}
             >
+              {consoleOpen && (
+                <span
+                  className={`z-10 inline-block cursor-ns-resize h-[6px] bg-gray-400 absolute top-0 left-0 right-0 bg-blue-500 opacity-0 hover:opacity-100
+                  ${consoleMoving && "opacity-100"}
+                  translate-y-[-3px]`}
+                  onMouseDown={() => {
+                    setConsoleMoving(true)
+                  }}
+                ></span>
+              )}
+
               <div>控制台</div>
               {consoleOpen ? (
                 <div className="flex items-center justify-center">
