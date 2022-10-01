@@ -19,6 +19,12 @@ const handler: BlitzAPIHandler<any> = async (req, res) => {
 }
 
 async function getUsers({ keywords }: { keywords: string }) {
+  const where = {
+    email: {
+      contains: keywords as string,
+    },
+    status: 1,
+  }
   const {
     items: users,
     hasMore,
@@ -29,20 +35,12 @@ async function getUsers({ keywords }: { keywords: string }) {
     take: 100,
     count: () =>
       db.user.count({
-        where: {
-          email: {
-            contains: keywords as string,
-          },
-        },
+        where,
       }),
     query: (paginateArgs) =>
       db.user.findMany({
         ...paginateArgs,
-        where: {
-          email: {
-            contains: keywords as string,
-          },
-        },
+        where,
         orderBy: { id: "asc" },
       }),
   })
