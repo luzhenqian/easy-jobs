@@ -386,7 +386,7 @@ const CodeSharing = () => {
             >
               {consoleOpen && (
                 <span
-                  className={`z-10 inline-block cursor-ns-resize h-[6px] bg-gray-400 absolute top-0 left-0 right-0 bg-blue-500 opacity-0 hover:opacity-100
+                  className={`z-10 inline-block cursor-ns-resize h-[6px] absolute top-0 left-0 right-0 bg-blue-500 opacity-0 hover:opacity-100
                   ${consoleMoving && "opacity-100"}
                   translate-y-[-3px]`}
                   onMouseDown={() => {
