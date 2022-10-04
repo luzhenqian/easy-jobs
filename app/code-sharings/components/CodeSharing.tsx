@@ -139,7 +139,10 @@ const CodeSharing = () => {
   const [logs, setLogs] = useState<{ type: "log" | "error" | "info"; args: any }[]>([])
   useEffect(() => {
     function onMessage(e) {
-      if (((e.data.type as string) || "").includes("console")) {
+      if (
+        ((e.data.type as string) || "").includes("console") ||
+        ((e.data.type as string) || "").includes("error")
+      ) {
         setLogs((prev) => [...prev, e.data])
       }
     }
@@ -426,7 +429,7 @@ const CodeSharing = () => {
                   language="json"
                   theme="vs-dark"
                   onMount={onLogMount}
-                  options={{ readOnly: true }}
+                  options={{ readOnly: true, fontSize: 18, tabSize: 2 }}
                 ></Editor>
               </div>
             ) : null}
@@ -474,6 +477,10 @@ for(let key in console) {
     return fns.get(key)(...args)
   }
 }
+
+window.addEventListener('error', function(event, source, lineno, colno, error) {
+  window.parent.postMessage({ type: 'error', args: [event.message] }, "*")
+})
 </script>`
 
 export default CodeSharing
