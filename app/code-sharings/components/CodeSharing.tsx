@@ -404,7 +404,8 @@ const CodeSharing = () => {
                   <Button
                     size={"xs"}
                     backgroundColor={"blue.500"}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation()
                       setLogs([])
                     }}
                     _hover={{ backgroundColor: "blue.600" }}
