@@ -1,7 +1,8 @@
 import Link from "next/link"
 import Layout from "app/core/layouts/Layout"
-import { BlitzPage } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import Card from "app/core/components/Card"
+import { Router } from "next/router"
 
 const AdminPage: BlitzPage = () => {
   return (
@@ -15,7 +16,7 @@ const AdminPage: BlitzPage = () => {
           </a>
         </Link>
 
-        <Link href="/trainings">
+        <Link href={Routes.AdminTrainingsPage()}>
           <a>
             <Card className="flex justify-center w-full p-8">
               <h1 className="flex items-center justify-center m-10 text-4xl font-bold">

@@ -33,7 +33,9 @@ const UserInfo = () => {
         {currentUser.role === "ADMIN" && (
           <Link href={Routes.AdminPage()}>
             <a>
-              <Button size="sm">管理中心</Button>
+              <Button size="sm" bgColor={"blue.500"} textColor={"white"}>
+                管理中心
+              </Button>
             </a>
           </Link>
         )}
@@ -89,7 +91,11 @@ const Search = () => {
           }
         }}
       />
-      <InputRightElement>
+      <InputRightElement
+        onClick={() => {
+          // TODO:
+        }}
+      >
         <SearchIcon size="lg" />
       </InputRightElement>
     </InputGroup>

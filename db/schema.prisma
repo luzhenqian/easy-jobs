@@ -83,7 +83,8 @@ model Training {
   cssFramework Json
   code         Json
   name         String
-  order        Int
+  order        Int      @unique
+  explanation  String
 }
 
 model TrainingAnswer {

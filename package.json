@@ -9,7 +9,8 @@
     "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
     "test": "jest",
     "test:watch": "jest --watch",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "migrate:postgres": "dotenv -e .env.local -- npx prisma migrate dev --name postgres-init"
   },
   "prisma": {
     "schema": "db/schema.prisma"
@@ -67,6 +68,7 @@
     "@types/react": "18.0.17",
     "@typescript-eslint/eslint-plugin": "5.30.5",
     "autoprefixer": "10.4.12",
+    "dotenv-cli": "6.0.0",
     "eslint": "7.32.0",
     "eslint-config-next": "12.2.0",
     "eslint-config-prettier": "8.5.0",

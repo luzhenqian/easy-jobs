@@ -58,11 +58,7 @@ export const TrainingsList = () => {
               <Td>{training.order}</Td>
               <Td>
                 <a
-                  href={
-                    currentUser?.role === "ADMIN"
-                      ? `/trainings/${training.type}/admin/${training.recordId}`
-                      : `/trainings/${training.type}/${training.recordId}`
-                  }
+                  href={`/trainings/${training.type}/${training.recordId}`}
                   target={currentUser?.role === "ADMIN" ? "" : "_blank"}
                   rel="noreferrer"
                 >

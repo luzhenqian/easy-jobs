@@ -29,7 +29,7 @@ function _TrainingForm<S extends z.ZodType<any, any>>(props: FormProps<S> | any,
       />
       <LabeledTextField name="name" label="题目" placeholder="输入题目名称" required />
       <LabeledTextField
-        name="description"
+        name="explanation"
         label="描述"
         placeholder="输入题目描述"
         type="textarea"

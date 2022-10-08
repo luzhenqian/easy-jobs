@@ -11,6 +11,7 @@ const UpdateTraining = z.object({
   }),
   jsFramework: z.object({}),
   cssFramework: z.object({}),
+  explanation: z.string(),
 })
 
 export default resolver.pipe(
