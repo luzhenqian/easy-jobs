@@ -176,7 +176,7 @@ const CodeSharing = () => {
           logEditorRef.current.setValue(
             logs
               .map((log) => {
-                return log.args
+                return JSON.parse(log.args)
                   .map((arg) => {
                     if (typeof arg === "object") {
                       return JSON.stringify(arg)
@@ -313,7 +313,7 @@ const CodeSharing = () => {
             }}
           ></span>
 
-          <div className="flex justify-between px-8 py-2 text-gray-100 bg-gray-900 flex-wrap gap-2">
+          <div className="flex flex-wrap justify-between gap-2 px-8 py-2 text-gray-100 bg-gray-900">
             <div className="flex gap-3">
               <span
                 className={`${lang === "html" ? "text-blue-500" : ""} cursor-pointer`}
@@ -469,12 +469,37 @@ function funcToString(args) {
   })
 }
 
+function objectStringify(args) {
+  Object.keys(args).forEach((key) => {
+    const arg = args[key]
+    if (arg instanceof HTMLElement) {
+      args[key] = arg.innerHTML
+    } else if (typeof arg === 'object') {
+      objectStringify(arg)
+    }
+  })
+}
+
+function objectToString(args) {
+  Object.keys(args).forEach((key) => {
+    const arg = args[key]
+    if (typeof arg === "object") {
+      args[key] = arg.toString()
+    }
+  })
+}
+
 var fns = new Map()
 for(let key in console) {
   fns.set(key, console[key])
   console[key] = (...args) => {
-    funcToString(args)
-    window.parent.postMessage({ type: 'console.' + key, args }, "*")
+    try {
+      funcToString(args)
+      objectStringify(args)
+    } catch (e) {
+      objectToString(args)
+    }
+    window.parent.postMessage({ type: 'console.' + key, args: JSON.stringify(args) }, "*")
     return fns.get(key)(...args)
   }
 }
