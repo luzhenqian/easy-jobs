@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { Routes, useParam } from "@blitzjs/next"
 import Head from "next/head"
 import { useMutation, useQuery } from "@blitzjs/rpc"
@@ -60,6 +60,7 @@ const CodeSharing = () => {
 
   const runJS = () => {
     if (canvasRef.current) {
+      lastScript.current = codes.javascript
       setLogs([])
       canvasRef.current.srcdoc = `${preInsertScript}${codes.html}<style>${codes.css}</style><script>${codes.javascript}</script>`
     }
@@ -123,14 +124,20 @@ const CodeSharing = () => {
   codeSharingId && count === 0 && router.replace("/404")
 
   const [_, copy] = useCopyToClipboard()
-  const makeDoc = () => {
+
+  const lastScript = useRef<string>("")
+  const makeDoc = useCallback(() => {
+    if (autoRunJS) {
+      lastScript.current = codes.javascript
+    }
     return `
     ${preInsertScript}
-    ${codes.html}<style>${codes.css}</style><script>((autoRunJS)=>{
-      if(!autoRunJS) return
-      ${codes.javascript}
-    })(${autoRunJS})</script>`
-  }
+    ${codes.html}<style>${codes.css}</style><script>${lastScript.current}</script>`
+  }, [codes])
+  const [doc, setDoc] = useState("")
+  useEffect(() => {
+    setDoc(makeDoc())
+  }, [codes, makeDoc])
   const [logs, setLogs] = useState<{ type: "log" | "error" | "info"; args: any }[]>([])
   useEffect(() => {
     function onMessage(e) {
@@ -163,6 +170,7 @@ const CodeSharing = () => {
   useEffect(() => {
     setLogs([])
   }, [codes])
+
   useEffect(() => {
     let timer: any = null
     if (consoleOpen === true) {
@@ -375,7 +383,7 @@ const CodeSharing = () => {
         </div>
 
         <div className="flex flex-col flex-1 min-w-[280px]">
-          <iframe className="flex-1 w-full" ref={canvasRef} srcDoc={makeDoc()}></iframe>
+          <iframe className="flex-1 w-full" ref={canvasRef} srcDoc={doc}></iframe>
 
           <div className="text-gray-100 bg-black rounded-t-lg">
             <div
