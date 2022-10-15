@@ -53,14 +53,9 @@ const CodeSharing = () => {
   const onLogMount = (editor) => {
     logEditorRef.current = editor
   }
-  let codeUpdateTimer: any = null
+
   const editorOnChange = (value) => {
-    if (codeUpdateTimer) {
-      clearTimeout(codeUpdateTimer)
-    }
-    codeUpdateTimer = setTimeout(() => {
-      setCodes((prev) => ({ ...prev, [lang]: value }))
-    }, 1000)
+    setCodes((prev) => ({ ...prev, [lang]: value }))
   }
 
   const runJS = () => {
@@ -176,7 +171,7 @@ const CodeSharing = () => {
           logEditorRef.current.setValue(
             logs
               .map((log) => {
-                return JSON.parse(log.args)
+                return log.args
                   .map((arg) => {
                     if (typeof arg === "object") {
                       return JSON.stringify(arg)
@@ -484,6 +479,9 @@ function objectToString(args) {
   Object.keys(args).forEach((key) => {
     const arg = args[key]
     if (typeof arg === "object") {
+      if(arg === null) {
+        return
+      }
       args[key] = arg.toString()
     }
   })
@@ -499,7 +497,7 @@ for(let key in console) {
     } catch (e) {
       objectToString(args)
     }
-    window.parent.postMessage({ type: 'console.' + key, args: JSON.stringify(args) }, "*")
+    window.parent.postMessage({ type: 'console.' + key, args }, "*")
     return fns.get(key)(...args)
   }
 }
