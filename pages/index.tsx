@@ -23,6 +23,14 @@ const Home: BlitzPage = () => {
           </a>
         </Link>
 
+        <Link href="/resources">
+          <a>
+            <Card className="flex justify-center w-full p-8">
+              <h1 className="flex items-center justify-center m-10 text-4xl font-bold">学习资源</h1>
+            </Card>
+          </a>
+        </Link>
+
         {/* <Link href="/homepage">
           <a>
             <Card className="flex justify-center w-full p-8">
