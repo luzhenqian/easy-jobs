@@ -100,6 +100,7 @@ export const EditTraining = () => {
                 id: training.id,
                 ...values,
               })
+              // @ts-ignore
               await setQueryData({
                 trainings: [updated],
               })
@@ -122,10 +123,10 @@ export const EditTraining = () => {
         <Modal isOpen={isOpen} onClose={onClose} closeOnEsc size={"full"}>
           <ModalOverlay />
           <ModalContent>
-            <ModalBody className="flex box-border">
+            <ModalBody className="box-border flex">
               <ModalCloseButton />
               <iframe
-                className="w-full flex-1"
+                className="flex-1 w-full"
                 srcDoc={`${code.html} <style>${code.css}</style>`}
               ></iframe>
             </ModalBody>
