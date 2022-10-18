@@ -2,6 +2,7 @@ import { Suspense } from "react"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import getBooks from "app/books/queries/getBooks"
+import Loading from "app/core/components/Loading"
 
 const ITEMS_PER_PAGE = 100
 
@@ -9,7 +10,7 @@ export const BooksList = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [{ books, hasMore }] = usePaginatedQuery(getBooks, {
-    orderBy: { id: "asc" },
+    orderBy: { order: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
@@ -39,7 +40,7 @@ export const BooksList = () => {
 
 const Books = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Loading />}>
       <BooksList />
     </Suspense>
   )
