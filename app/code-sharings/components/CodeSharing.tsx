@@ -46,6 +46,10 @@ const CodeSharing = () => {
   const canvasRef = useRef<HTMLIFrameElement | null>(null)
   const onMount = (editor) => {
     editorRef.current = editor
+    if (codeSharingId && count > 0) {
+      editorRef.current.setValue(codeSharings[0]!.code![lang])
+      return
+    }
     editorRef.current.setValue(codes[lang])
   }
 
@@ -120,6 +124,12 @@ const CodeSharing = () => {
       staleTime: Infinity,
     }
   )
+
+  useEffect(() => {
+    if (count > 0) {
+      setCodes(codeSharings[0]!.code!)
+    }
+  }, [codeSharings, count])
 
   codeSharingId && count === 0 && router.replace("/404")
 

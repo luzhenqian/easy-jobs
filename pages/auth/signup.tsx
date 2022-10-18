@@ -28,7 +28,7 @@ const SignupPage: BlitzPage = () => {
         position: "top",
       })
     }
-  }, [router.query])
+  }, [router.query, toast])
   return (
     <Layout title="注册">
       <div className="w-[800px] m-auto flex justify-center">

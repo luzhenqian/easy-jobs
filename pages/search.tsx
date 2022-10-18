@@ -33,7 +33,7 @@ const SearchPage: BlitzPage = () => {
           setSearching(false)
         })
     }
-  }, [router.query])
+  }, [router.query, tabIndex])
 
   function handleTabsChange(index) {
     setTabIndex(index)
@@ -68,7 +68,7 @@ const SearchPage: BlitzPage = () => {
 
 const User = (user) => {
   return (
-    <div className="w-full border-b border-gray-200 py-4">
+    <div className="w-full py-4 border-b border-gray-200">
       <div>{user.email}</div>
       <div></div>
     </div>

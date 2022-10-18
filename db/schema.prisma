@@ -109,3 +109,14 @@ model CodeSharing {
   isDraft   Boolean
   name      String   @default("")
 }
+
+model Book {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  recordId  String   @default(uuid())
+  name      String
+  url       String
+  cover     String
+  order     Int
+}

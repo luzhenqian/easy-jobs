@@ -35,6 +35,14 @@ const AdminPage: BlitzPage = () => {
             </Card>
           </a>
         </Link>
+
+        <Link href={Routes.BooksPage()}>
+          <a>
+            <Card className="flex justify-center w-full p-8">
+              <h1 className="flex items-center justify-center m-10 text-4xl font-bold">图书管理</h1>
+            </Card>
+          </a>
+        </Link>
       </main>
     </Layout>
   )

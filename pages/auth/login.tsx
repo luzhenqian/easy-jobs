@@ -28,7 +28,7 @@ const LoginPage: BlitzPage = (props) => {
         position: "top",
       })
     }
-  }, [router.query])
+  }, [router.query, toast])
 
   return (
     <Layout title="登录">
