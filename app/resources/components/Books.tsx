@@ -5,6 +5,7 @@ import getBooks from "app/books/queries/getBooks"
 import Loading from "app/core/components/Loading"
 
 const ITEMS_PER_PAGE = 100
+const fillPrefix = (url: string) => `${process.env.CDN_HOST}${url}`
 
 export const BooksList = () => {
   const router = useRouter()
@@ -22,8 +23,19 @@ export const BooksList = () => {
     <div>
       <ul className="flex flex-wrap gap-4">
         {books.map(({ id, name, cover, url }) => (
-          <a download href={url} target="_blank" rel="noreferrer" key={id} className="inline-block">
-            <img src={cover} alt={url} className={"max-w-[135px] max-h-[200px]"} />
+          <a
+            download
+            href={fillPrefix(url)}
+            target="_blank"
+            rel="noreferrer"
+            key={id}
+            className="inline-block"
+          >
+            <img
+              src={fillPrefix(cover)}
+              alt={fillPrefix(url)}
+              className={"max-w-[135px] max-h-[200px]"}
+            />
           </a>
         ))}
       </ul>
