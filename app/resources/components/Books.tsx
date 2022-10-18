@@ -5,7 +5,8 @@ import getBooks from "app/books/queries/getBooks"
 import Loading from "app/core/components/Loading"
 
 const ITEMS_PER_PAGE = 100
-const fillPrefix = (url: string) => `${process.env.CDN_HOST}${url}`
+// TODO: move env
+const fillPrefix = (url: string) => `https://cdn.easyjobs.biz/${url}`
 
 export const BooksList = () => {
   const router = useRouter()
