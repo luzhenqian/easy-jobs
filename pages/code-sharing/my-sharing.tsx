@@ -78,7 +78,7 @@ export const CodeSharingsList = () => {
                   <span
                     className="text-blue-500"
                     onClick={async () => {
-                      await copy(`${location.host}/code-sharing/${recordId}`)
+                      await copy(`${location.host}/code-sharing/${recordId}#${name}`)
                       toast({
                         title: "复制成功",
                         status: "success",

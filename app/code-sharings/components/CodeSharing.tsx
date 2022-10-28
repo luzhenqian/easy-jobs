@@ -96,7 +96,9 @@ const CodeSharing = () => {
       name: shareName,
     })
     setSharing(false)
-    await router.push(Routes.CodeSharingHashPage({ codeSharingId: recordId }))
+    await router.push(Routes.CodeSharingHashPage({ codeSharingId: recordId }), {
+      hash: name,
+    })
     toast({
       status: "success",
       title: "分享成功！",
@@ -232,7 +234,7 @@ const CodeSharing = () => {
               <Input
                 size={"sm"}
                 width={"140px"}
-                maxLength={8}
+                maxLength={16}
                 placeholder="请输入分享的代码名称"
                 autoFocus
                 onKeyDown={(e) => {
