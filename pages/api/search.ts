@@ -1,9 +1,10 @@
 import { BlitzAPIHandler } from "@blitzjs/next"
 import db from "db"
 import { paginate } from "blitz"
+import { htmlToImageBuffer } from "app/training-answers/mutations/createTrainingAnswer"
 
 interface Result {
-  type: "user"
+  type: "user" | "code"
   [key: string]: any
 }
 
@@ -15,6 +16,13 @@ const handler: BlitzAPIHandler<any> = async (req, res) => {
       keywords: keywords as string,
     })
   }
+  if (type === "code") {
+    result = await getCodes({
+      keywords: keywords as string,
+    })
+  }
+  console.log(result, "rrr")
+
   res.send(result)
 }
 
@@ -41,7 +49,7 @@ async function getUsers({ keywords }: { keywords: string }) {
       db.user.findMany({
         ...paginateArgs,
         where,
-        orderBy: { id: "asc" },
+        orderBy: { createdAt: "desc" },
       }),
   })
   const result: Result[] = []
@@ -55,4 +63,60 @@ async function getUsers({ keywords }: { keywords: string }) {
   return result
 }
 
+async function getCodes({ keywords }: { keywords: string }) {
+  const where = {
+    name: {
+      contains: keywords as string,
+    },
+  }
+  const {
+    items: codes,
+    hasMore,
+    nextPage,
+    count,
+  } = await paginate({
+    skip: 0,
+    take: 100,
+    count: () =>
+      db.codeSharing.count({
+        where,
+      }),
+    query: (paginateArgs) =>
+      db.codeSharing.findMany({
+        ...paginateArgs,
+        where,
+        orderBy: { createdAt: "desc" },
+      }),
+  })
+  const result: Result[] = []
+
+  await asyncForEach<any>(codes, async (code) => {
+    result.push({
+      type: "code",
+      ...code,
+      author: await db.user.findFirst({
+        where: {
+          recordId: code.userId,
+        },
+      }),
+      // cover: (
+      //   await htmlToImageBuffer(`${(code?.code as any)?.html || ""}
+      // <style>${(code?.code as any).css || ""}</style>
+      // <script>${(code?.code as any)?.javascript}</script>`)
+      // ).toString("base64"),
+    })
+  })
+
+  return result
+}
+
 export default handler
+
+export async function asyncForEach<T>(
+  array: Array<T>,
+  callback: (item: T | undefined, index: number) => Promise<void>
+) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index)
+  }
+}

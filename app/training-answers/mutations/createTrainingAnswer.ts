@@ -44,7 +44,7 @@ async function diff(htmlStringFirst: string, htmlStringSecond: string): Promise<
   return firstImageBinary.equals(secondImageBinary)
 }
 
-async function htmlToImageBuffer(htmlString: string): Promise<Buffer> {
+export async function htmlToImageBuffer(htmlString: string): Promise<Buffer> {
   const httpClient = axios.create({
     baseURL: process.env.AWS_REGION
       ? "https://easy-jobs-screenshot.vercel.app"
