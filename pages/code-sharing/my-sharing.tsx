@@ -7,14 +7,14 @@ import { useRouter } from "next/router"
 import Layout from "app/core/layouts/Layout"
 import getCodeSharings from "app/code-sharings/queries/getCodeSharings"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
-import { Table, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react"
+import { Alert, Table, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react"
 import dayjs from "dayjs"
 import PageLoading from "app/core/components/PageLoading"
 import deleteCodeSharing from "app/code-sharings/mutations/deleteCodeSharing"
 import Loading from "app/core/components/Loading"
 import useCopyToClipboard from "app/core/hooks/useCopyToClipboard"
 
-const ITEMS_PER_PAGE = 30
+const ITEMS_PER_PAGE = 50
 
 export const CodeSharingsList = () => {
   const router = useRouter()
@@ -24,7 +24,7 @@ export const CodeSharingsList = () => {
   const page = Number(router.query.page) || 0
   const [{ codeSharings, hasMore }, { refetch }] = usePaginatedQuery(getCodeSharings, {
     where: { userId: user?.recordId },
-    orderBy: { id: "asc" },
+    orderBy: { createdAt: "desc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
@@ -35,6 +35,7 @@ export const CodeSharingsList = () => {
 
   return (
     <div>
+      <Alert variant={"left-accent"}>最多只保留最近 {ITEMS_PER_PAGE} 条记录！</Alert>
       <Table>
         <Thead>
           <Tr>
@@ -134,7 +135,6 @@ const MyCodeSharings = () => {
             <a>Create CodeSharing</a>
           </Link>
         </p> */}
-
         <Suspense fallback={<Loading />}>
           <CodeSharingsList />
         </Suspense>
