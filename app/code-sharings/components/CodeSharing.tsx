@@ -96,9 +96,8 @@ const CodeSharing = () => {
       name: shareName,
     })
     setSharing(false)
-    await router.push(Routes.CodeSharingHashPage({ codeSharingId: recordId }), {
-      hash: name,
-    })
+    // FIXME:
+    await router.push(`/code-sharing/${recordId}#${name}`)
     toast({
       status: "success",
       title: "分享成功！",
